@@ -35,6 +35,7 @@ public class Grid implements ActionListener {
         Pixel p = (Pixel) e.getSource();
         Pixel.State pState = p.getState();
         switch (pState) {
+            // TODO Figure out how to differentiate between left and right click
             case unknown:
                 p.setState(Pixel.State.marked);
                 break;
