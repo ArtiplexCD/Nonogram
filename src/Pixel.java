@@ -3,6 +3,7 @@ import java.awt.*;
 
 public class Pixel extends JButton {
 
+    // Trying to use as identifiers
     enum State
     {
         unknown,

@@ -4,14 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Grid implements ActionListener {
-    //private final Pixel[][] pixels = new Pixel[15][15];
-    private final Pixel[][] pixels = new Pixel[5][5];
+    private final int gridSize = 5;
+    private final Pixel[][] pixels = new Pixel[gridSize][gridSize];
 
     public Grid()
     {
         JPanel panel = new JPanel();
         JFrame frame = new JFrame();
-        GridLayout layout = new GridLayout(5, 5);
+        GridLayout layout = new GridLayout(gridSize, gridSize);
 
         panel.setLayout(layout);
         frame.setContentPane(panel);
