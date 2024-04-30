@@ -21,6 +21,8 @@ public class Grid implements ActionListener {
             for (int j = 0; j < pixels.length; j++) {
                 pixels[i][j] = new Pixel();
                 pixels[i][j].setBackground(Color.yellow);
+                //TODO Change if on mac to ture or false on windows because you can see what color it is on mac if true
+                pixels[i][j].setOpaque(true);
                 if (i != 0 && j != 0) {
                     panel.add(pixels[i][j]);
                 }
