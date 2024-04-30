@@ -37,6 +37,13 @@ public class Grid implements ActionListener {
         switch (pState) {
             case unknown:
                 p.setState(Pixel.State.marked);
+                break;
+            case marked:
+                p.setState(Pixel.State.unknown);
+                break;
+            case shaded:
+                p.setState(Pixel.State.unknown);
+                break;
         }
 
         //if (p == unknownPixel) {
