@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 public class Grid implements ActionListener {
     //private final Pixel[][] pixels = new Pixel[15][15];
-    private final JButton[][] pixels = new JButton[15][15];
+    private final Pixel[][] pixels = new Pixel[15][15];
 
     private Pixel unknownPixel;
     private Pixel whitePixel;
@@ -23,7 +23,7 @@ public class Grid implements ActionListener {
 
         for (int i = 0; i < pixels.length; i++) {
             for (int j = 0; j < pixels.length; j++) {
-                pixels[i][j] = new JButton();
+                pixels[i][j] = new Pixel();
                 pixels[i][j].setBackground(Color.yellow);
                 if (i != 0 && j != 0) {
                     panel.add(pixels[i][j]);

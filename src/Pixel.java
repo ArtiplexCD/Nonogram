@@ -6,11 +6,9 @@ public class Pixel extends JButton {
     //private int yPos;
     private Icon unknownIcon;
 
-    public Pixel(String filename)
+    public Pixel()
     {
-        super(new ImageIcon(filename));
-
-        unknownIcon = this.getIcon();
+        super();
     }
 
     //public int getxPos() { return xPos; }
