@@ -5,17 +5,13 @@ import java.awt.event.ActionListener;
 
 public class Grid implements ActionListener {
     //private final Pixel[][] pixels = new Pixel[15][15];
-    private final Pixel[][] pixels = new Pixel[15][15];
-
-    private Pixel unknownPixel;
-    private Pixel whitePixel;
-    private Pixel blackPixel;
+    private final Pixel[][] pixels = new Pixel[5][5];
 
     public Grid()
     {
         JPanel panel = new JPanel();
         JFrame frame = new JFrame();
-        GridLayout layout = new GridLayout(15, 15);
+        GridLayout layout = new GridLayout(5, 5);
 
         panel.setLayout(layout);
         frame.setContentPane(panel);
@@ -37,14 +33,20 @@ public class Grid implements ActionListener {
     }
     public void actionPerformed(ActionEvent e) {
         Pixel p = (Pixel) e.getSource();
-        if (p == unknownPixel) {
+        Pixel.State pState = p.getState();
+        switch (pState) {
+            case unknown:
+                p.setState(Pixel.State.marked);
+        }
+
+        //if (p == unknownPixel) {
             //p = /* TODO if left pressed */ ? blackPixel : whitePixel; // TODO exchange pixel with blackPixel || whitePixel
-        }
-        if (p == blackPixel /* TODO && left mouse pressed */) {
+
+        //if (p == blackPixel /* TODO && left mouse pressed */) {
             // TODO exchange pixel with unknownPixel
-        }
-        if (p == whitePixel /* TODO && right mouse is pressed */) {
+
+        //if (p == whitePixel /* TODO && right mouse is pressed */) {
             // TODO exchange pixel with unknownPixel
-        }
+
     }
 }
