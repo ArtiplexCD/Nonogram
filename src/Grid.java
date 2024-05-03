@@ -66,15 +66,5 @@ public class Grid implements ActionListener {
                     p.setState(Pixel.State.unknown);
                 break;
         }
-
-        //if (p == unknownPixel) {
-            //p = /* TODO if left pressed */ ? blackPixel : whitePixel; // TODO exchange pixel with blackPixel || whitePixel
-
-        //if (p == blackPixel /* TODO && left mouse pressed */) {
-            // TODO exchange pixel with unknownPixel
-
-        //if (p == whitePixel /* TODO && right mouse is pressed */) {
-            // TODO exchange pixel with unknownPixel
-
     }
 }
