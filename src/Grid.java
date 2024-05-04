@@ -1,35 +1,29 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 
 
-public class Grid implements ActionListener {
-
-    private final int gridSize = 5;
-
-    private final Pixel[][] pixels = new Pixel[gridSize][gridSize];
+public class Grid implements ActionListener
+{
+    private final int gridSize;
+    private final JPanel panel;
 
     private int lastButtonPressed = -1; // -1 is none, 1 is left and 3 is right
 
-    public Grid()
+    public Grid(int gridSize, JPanel panel)
     {
-        GridLayout layout = new GridLayout(gridSize, gridSize);
+        this.gridSize = gridSize;
+        this.panel = panel;
+        renderGrid();
+    }
 
-        JPanel panel = new JPanel();
-        panel.setLayout(layout);
-
-        JFrame frame = new JFrame();
-        frame.setContentPane(panel);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setSize(750, 750);
+    public void renderGrid()
+    {
+        Pixel[][] pixels = new Pixel[gridSize][gridSize];
 
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
 
                 pixels[i][j] = new Pixel();
-
-                pixels[i][j].setOpaque(true);
-
 
                 pixels[i][j].addActionListener(this);
 
@@ -50,13 +44,14 @@ public class Grid implements ActionListener {
 
                 panel.add(pixels[i][j]);
             }
-            frame.setVisible(true);
         }
     }
 
-    public void updateAction(Pixel pixel) {
+    public void updateAction(Pixel pixel)
+    {
         Pixel.State pState = pixel.getState();
-        switch (pState) {
+        switch (pState)
+        {
             case unknown:
                 if (lastButtonPressed == MouseEvent.BUTTON1)
                     pixel.setState(Pixel.State.marked);
@@ -86,9 +81,11 @@ public class Grid implements ActionListener {
         }
     }
 
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e)
+    {
+
         Pixel pixel = (Pixel) e.getSource();
 
-         updateAction(pixel);
+        updateAction(pixel);
     }
 }

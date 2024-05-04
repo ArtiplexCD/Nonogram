@@ -1,8 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Pixel extends JButton {
-
+public class Pixel extends JButton
+{
     // Trying to use as identifiers
     enum State
     {
@@ -18,7 +18,6 @@ public class Pixel extends JButton {
         super();
 
         state = State.unknown;
-        this.state = State.unknown;
 
         updateColor();
     }
@@ -50,7 +49,5 @@ public class Pixel extends JButton {
                 setBackground(Color.white);
                 break;
         }
-
     }
-
 }
