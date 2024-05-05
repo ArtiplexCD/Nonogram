@@ -36,7 +36,7 @@ public class GameView extends JFrame
 
         Grid grid = new Grid(this.gridSize, gridPanel);
 
-        gameController = new GameController(this.gridSize, this);
+        gameController = new GameController(grid, this.gridSize, this);
 
         gameController.checkCompletionButton(borderPanel);
 

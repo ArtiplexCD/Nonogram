@@ -7,6 +7,8 @@ public class Grid implements ActionListener
     private final int gridSize;
     private final JPanel panel;
 
+    private Pixel[][] pixels;
+
     private int lastButtonPressed = -1; // -1 is none, 1 is left and 3 is right
 
     public Grid(int gridSize, JPanel panel)
@@ -18,7 +20,7 @@ public class Grid implements ActionListener
 
     public void renderGrid()
     {
-        Pixel[][] pixels = new Pixel[gridSize][gridSize];
+        pixels = new Pixel[gridSize][gridSize];
 
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
@@ -45,6 +47,21 @@ public class Grid implements ActionListener
                 panel.add(pixels[i][j]);
             }
         }
+    }
+
+    public Pixel[][] getPixel() {
+        Pixel[][] pixels = new Pixel[gridSize][gridSize];
+        for (int row = 0; row < gridSize; row++) {
+            for (int col = 0; col < gridSize; col++) {
+                pixels[row][col] = this.pixels[row][col];
+                if (col == gridSize -1) {
+                    System.out.println("in return statement section");
+                    return pixels;
+                }
+            }
+        }
+        System.out.println("out of return statement section");
+        return pixels;
     }
 
     public void updateAction(Pixel pixel)
@@ -83,7 +100,6 @@ public class Grid implements ActionListener
 
     public void actionPerformed(ActionEvent e)
     {
-
         Pixel pixel = (Pixel) e.getSource();
 
         updateAction(pixel);
