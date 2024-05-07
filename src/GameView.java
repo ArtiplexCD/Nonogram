@@ -1,11 +1,16 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class GameView extends JFrame
 {
-    GameController gameController;
+    private GameController gameController;
+    private ByteReader byteReader;
 
-    private final int gridSize;
+    private final int xGridSize;
+    private final int yGridSize;
+
+    private Grid grid;
 
     private BorderLayout borderLayout;
     private GridLayout gridLayout;
@@ -16,12 +21,14 @@ public class GameView extends JFrame
     private JFrame frame;
 
 
-    public GameView(int gridSize)
-    {
-        this.gridSize = gridSize;
+    public GameView(ByteReader byteReader) {
+        this.byteReader = byteReader;
+
+        this.xGridSize = byteReader.getGridSize(true);
+        yGridSize = byteReader.getGridSize(false);
 
         borderLayout = new BorderLayout();
-        gridLayout = new GridLayout(this.gridSize, this.gridSize);
+        gridLayout = new GridLayout(this.xGridSize, this.yGridSize);
 
         borderPanel = new JPanel(borderLayout);
         gridPanel = new JPanel(gridLayout);
@@ -34,19 +41,26 @@ public class GameView extends JFrame
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(750, 750);
 
-        Grid grid = new Grid(this.gridSize, gridPanel);
+        grid = new Grid(xGridSize, yGridSize,this.gridPanel);
 
-        gameController = new GameController(grid, this.gridSize, this);
+        gameController = new GameController(grid, byteReader,this);
 
-        gameController.checkCompletionButton(borderPanel);
+        //gameController.checkCompletionButton(borderPanel);
 
-        //GameComplete gameComplete = new GameComplete(gameController, panel);
+        GameComplete gameComplete = new GameComplete(gameController, borderPanel);
         frame.setVisible(true);
     }
 
     public void showCompletionMessage()
     {
         JLabel label = new JLabel("Congratulations!");
-        borderPanel.add(label, BorderLayout.CENTER);
+
+        frame.setTitle("Complete Hanjie Puzzle Game");
+    }
+
+    public void showNotCompleteMessage() {
+        JLabel label = new JLabel("Not Congratulations!");
+
+        frame.setTitle("Not Complete Hanjie Puzzle Game");
     }
 }

@@ -1,9 +1,13 @@
+import java.io.IOException;
 
 public class Main
 {
-    public static final int gridSize = 5;
 
-    public static void main(String[] args) {
-        GameView gameView = new GameView(gridSize);
+    public static void main(String[] args) throws IOException {
+        String image = new String("elephant.bmp");
+
+        ByteReader byteReader = new ByteReader(image);
+
+        GameView gameView = new GameView(byteReader);
     }
 }

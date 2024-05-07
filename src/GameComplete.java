@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class GameComplete implements ActionListener
 {
@@ -16,10 +17,10 @@ public class GameComplete implements ActionListener
 
         button.addActionListener(this);
 
-        panel.add(button);
+        panel.add(button, BorderLayout.SOUTH);
 
         button.setBackground(Color.blue);
-        button.setText("Check If Complete");
+        button.setText("Check If Complete new");
     }
 
     public void actionPerformed(ActionEvent e)
