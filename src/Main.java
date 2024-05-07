@@ -4,7 +4,7 @@ public class Main
 {
 
     public static void main(String[] args) throws IOException {
-        String image = new String("elephant.bmp");
+        String image = "bmpFiles/elephant.bmp";
 
         ByteReader byteReader = new ByteReader(image);
 

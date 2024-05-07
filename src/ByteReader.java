@@ -23,8 +23,6 @@ public class ByteReader
 
         while (n <= image.getWidth() * image.getHeight() - 1) {
 
-            byteArray[n] = image.getRGB(x, y);
-
             int color = image.getRGB(x, y);
 
             if (color == Color.black.getRGB())
