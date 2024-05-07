@@ -41,7 +41,7 @@ public class GameView extends JFrame
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(750, 750);
 
-        grid = new Grid(xGridSize, yGridSize,this.gridPanel);
+        grid = new Grid(xGridSize, yGridSize, this.gridPanel);
 
         gameController = new GameController(grid, byteReader,this);
 
