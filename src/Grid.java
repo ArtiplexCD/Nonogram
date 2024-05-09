@@ -42,7 +42,8 @@ public class Grid implements ActionListener, MouseListener
     }
 
     //Gets the byte map of marked game
-    public int[] getPixel() {
+    public int[] getPixel()
+    {
         int[] pixelArray = new int[xGridSize * yGridSize];
 
         int n = 0;
@@ -72,28 +73,6 @@ public class Grid implements ActionListener, MouseListener
 
         return pixelArray;
     }
-
-//    public int[][] getPixelArray2D()
-//    {
-//        int[][] pixelArray2D = new int[xGridSize][yGridSize];
-//
-//        for (int xPixel = 0; xPixel < xGridSize; xPixel++) {
-//            for (int yPixel = yGridSize - 1; yPixel >=0; yPixel--) {
-//
-//                Pixel.State state = pixels[xPixel][yPixel].getState();
-//
-//                if (state == Pixel.State.marked)
-//                    pixelArray2D[xPixel][yPixel] = 1;
-//
-////                else if (state == Pixel.State.shaded)
-////                    pixelArray2D[xPixel][yPixel] = 2;
-//
-//                else
-//                    pixelArray2D[xPixel][yPixel] = 0;
-//            }
-//        }
-//        return pixelArray2D;
-//    }
 
     public void updateAction(Pixel pixel)
     {
@@ -136,13 +115,15 @@ public class Grid implements ActionListener, MouseListener
         updateAction(pixel);
     }
 
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent e)
+    {
         // TODO to make mouse dragged using this is very simple would just need to include left pressed to be manually started
        if (lastButtonPressed == MouseEvent.BUTTON1)
             actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
     }
 
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(MouseEvent e)
+    {
         if (SwingUtilities.isRightMouseButton(e))
             lastButtonPressed = MouseEvent.BUTTON3;
 
@@ -158,11 +139,21 @@ public class Grid implements ActionListener, MouseListener
         lastButtonPressed = -1;
     }
 
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(MouseEvent e)
+    {
         //TODO to make mouseDrag work
         if (lastButtonPressed == MouseEvent.BUTTON1)
             actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
     }
 
     public void mouseExited(MouseEvent e) {}
+
+    public void gameComplete()
+    {
+        for (Pixel[] pixel : pixels) {
+            for (Pixel p : pixel) {
+                if (p.getState() != Pixel.State.marked) { p.setState(Pixel.State.shaded); }
+            }
+        }
+    }
 }

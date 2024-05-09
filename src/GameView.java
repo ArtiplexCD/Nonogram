@@ -3,13 +3,13 @@ import java.awt.*;
 
 public class GameView extends JFrame
 {
-    private GameController gameController;
-    private ByteReader byteReader;
+    private final GameController gameController;
+    private final ByteReader byteReader;
 
-    private final int xGridSize;
-    private final int yGridSize;
+    private int xGridSize;
+    private int yGridSize;
 
-    private Grid grid;
+    private final Grid grid;
 
     private BorderLayout borderLayout;
     private GridLayout gridLayout;
@@ -20,7 +20,8 @@ public class GameView extends JFrame
     private JFrame frame;
 
 
-    public GameView(ByteReader byteReader) {
+    public GameView(ByteReader byteReader)
+    {
         this.byteReader = byteReader;
 
         this.xGridSize = byteReader.getGridSize(true);
@@ -35,6 +36,8 @@ public class GameView extends JFrame
         borderPanel.setLayout(borderLayout);
         borderPanel.add(gridPanel, BorderLayout.CENTER);
 
+        clueDisplay();
+
         frame = new JFrame("Hanjie Puzzle Game");
         frame.setContentPane(borderPanel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -42,24 +45,19 @@ public class GameView extends JFrame
 
         grid = new Grid(xGridSize, yGridSize, this.gridPanel);
 
-        gameController = new GameController(grid, byteReader,this);
+        gameController = new GameController(grid, byteReader, borderPanel, frame);
 
-        //gameController.checkCompletionButton(borderPanel);
-
-        GameComplete gameComplete = new GameComplete(gameController, borderPanel);
         frame.setVisible(true);
     }
 
-    public void showCompletionMessage()
+    public void clueDisplay()
     {
-        JLabel label = new JLabel("Congratulations!");
-
-        frame.setTitle("Complete Hanjie Puzzle Game");
-    }
-
-    public void showNotCompleteMessage() {
-        JLabel label = new JLabel("Not Congratulations!");
-
-        frame.setTitle("Not Complete Hanjie Puzzle Game");
+        JPanel topCluePanel = new JPanel(new GridLayout(1, this.xGridSize));
+        JPanel leftCluePanel = new JPanel(new GridLayout(this.yGridSize, 1));
+        int[] byteArray = byteReader.getByteArray();
+        for (int i = 0; i < this.xGridSize; i++) {
+            topCluePanel.add(new Label(byteArray[i*15] + ""));
+            leftCluePanel.add(new Label(byteArray[i*15] + ""));
+        }
     }
 }

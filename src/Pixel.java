@@ -8,8 +8,10 @@ public class Pixel extends JButton
     {
         unknown,
         shaded,
-        marked
+        marked;
     }
+
+    //private int pixelMarkedColor;
 
     private State state;
 
@@ -30,8 +32,12 @@ public class Pixel extends JButton
 
     public State getState()
     {
-        return this.state;
+        //if (state != State.marked)
+            return this.state;
+        //return ;
     }
+
+
 
     public void updateColor()
     {

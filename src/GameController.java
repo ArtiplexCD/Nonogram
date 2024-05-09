@@ -1,43 +1,37 @@
 import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
 import java.util.Arrays;
 
-public class GameController {
+public class GameController
+{
     private final Grid grid;
-    private final GameView gameView;
     private boolean isComplete;
 
-    private ByteReader byteReader;
+    private final ByteReader byteReader;
+    private final GameComplete gameComplete;
 
-    public GameController(Grid grid, ByteReader byteReader,GameView gameView) {
+    public GameController(Grid grid, ByteReader byteReader, JPanel panel, JFrame frame)
+    {
         this.grid = grid;
         this.byteReader = byteReader;
-        this.gameView = gameView;
         this.isComplete = false;
+
+        this.gameComplete = new GameComplete(this, panel, frame);
     }
 
-    public void checkCompletion() {
+    public void checkCompletion()
+    {
         if (isGameComplete()) {
             isComplete = true;
-            gameView.showCompletionMessage();
+            gameComplete.showCompletionMessage();
+            grid.gameComplete();
         }
         else {
-            gameView.showNotCompleteMessage();
+            gameComplete.showNotCompleteMessage();
         }
     }
 
-//    public void checkCompletionButton(JPanel borderPanel)  {
-//        JButton checkCompletionButton = new JButton("Check If You Got It Right!");
-//
-//        checkCompletionButton.addActionListener(e -> {
-//            checkCompletion();
-//        });
-//
-//        borderPanel.add(checkCompletionButton, BorderLayout.SOUTH);
-//    }
-
-    public boolean isGameComplete() {
+    public boolean isGameComplete()
+    {
         return Arrays.equals(grid.getPixel(), byteReader.seeBMPImage());
     }
 }
