@@ -1,9 +1,9 @@
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ByteReader
 {
@@ -20,7 +20,7 @@ public class ByteReader
         initializeColors();
     }
 
-    public int[] seeBMPImage()
+    public void seeBMPImage()
     {
         byteArray = new int[image.getWidth() * image.getHeight()];
 
@@ -46,12 +46,11 @@ public class ByteReader
                 x = 0;
             }
         }
-
-        return byteArray;
     }
 
     public int[] getByteArray()
     {
+        seeBMPImage();
         return byteArray;
     }
 
@@ -73,27 +72,28 @@ public class ByteReader
         int x = 0;
         int y = 0;
 
-        while (n <= image.getWidth() * image.getHeight() - 1) {
+        while (n < image.getWidth() * image.getHeight()) {
 
             int color = image.getRGB(x, y);
+            int white = (color >> 24) & 0xff;
 
             boolean newColor = true;
 
             for (int c : colors) {
-                if (c == color) {
+                if ((c == color) || (color == white)) {
                     newColor = false;
                     break;
                 }
             }
 
-            if (newColor && colors.length != 0) {
-                int[] col = colors;
-                colors = new int[colors.length + 1];
-                colors = col;
-                //TODO Fix this
+            if (newColor /*&& colors.length != 0 */) {
+                increaseSize();
+
                 colors[i] = color;
+
                 i++;
             }
+            System.out.println("Color: " + Arrays.toString(colors));
 
             n++;
             x++;
@@ -103,5 +103,13 @@ public class ByteReader
                 x = 0;
             }
         }
+    }
+
+    public void increaseSize() {
+        int[] temp = new int[colors.length + 1];
+
+        System.arraycopy(colors, 0, temp, 0, colors.length);
+
+        colors = temp;
     }
 }

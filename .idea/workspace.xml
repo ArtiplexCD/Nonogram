@@ -11,7 +11,6 @@
       <change beforePath="$PROJECT_DIR$/src/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GameView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Grid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Grid.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pixel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pixel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,6 +102,11 @@
       <workItem from="1714832306565" duration="11901000" />
       <workItem from="1714908670325" duration="4236000" />
       <workItem from="1715096953227" duration="1129000" />
+      <workItem from="1715213847095" duration="636000" />
+      <workItem from="1715215503360" duration="20000" />
+      <workItem from="1715269474927" duration="3644000" />
+      <workItem from="1715297322629" duration="84000" />
+      <workItem from="1715375861938" duration="4921000" />
     </task>
     <servers />
   </component>

@@ -32,6 +32,6 @@ public class GameController
 
     public boolean isGameComplete()
     {
-        return Arrays.equals(grid.getPixel(), byteReader.seeBMPImage());
+        return Arrays.equals(grid.getPixel(), byteReader.getByteArray());
     }
 }

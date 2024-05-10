@@ -34,7 +34,7 @@ public class Grid implements ActionListener, MouseListener
                 pixels[i][j].addActionListener(this);
 
                 pixels[i][j].addMouseListener(this);
-                    // Differentiating between left and right click
+                // Differentiating between left and right click
 
                 panel.add(pixels[i][j]);
             }
@@ -84,7 +84,7 @@ public class Grid implements ActionListener, MouseListener
                     pixel.setState(Pixel.State.marked);
 
                 else if (lastButtonPressed == MouseEvent.BUTTON3)
-                     pixel.setState(Pixel.State.shaded);
+                    pixel.setState(Pixel.State.shaded);
 
                 break;
 
@@ -118,7 +118,7 @@ public class Grid implements ActionListener, MouseListener
     public void mouseClicked(MouseEvent e)
     {
         // TODO to make mouse dragged using this is very simple would just need to include left pressed to be manually started
-       if (lastButtonPressed == MouseEvent.BUTTON1)
+        if (lastButtonPressed == MouseEvent.BUTTON1)
             actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
     }
 
