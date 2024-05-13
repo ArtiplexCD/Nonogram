@@ -3,19 +3,25 @@ import java.awt.event.*;
 
 public class Grid implements ActionListener, MouseListener
 {
-    private final int xGridSize;
-    private final int yGridSize;
+    private int xGridSize;
+    private int yGridSize;
     private final JPanel panel;
 
     private Pixel[][] pixels;
 
     private int lastButtonPressed = -1; // -1 is none, 1 is left and 3 is right
 
-    public Grid(int xGridSize, int yGridSize, JPanel panel)
+    private GameView gameView;
+    private ByteReader byteReader;
+
+    public Grid(int xGridSize, int yGridSize, JPanel panel, GameView gameView, ByteReader byteReader)
     {
         this.xGridSize = xGridSize;
         this.yGridSize = yGridSize;
         this.panel = panel;
+        this.gameView = gameView;
+        this.byteReader = byteReader;
+
         renderGrid();
     }
 
@@ -28,6 +34,7 @@ public class Grid implements ActionListener, MouseListener
 
                 pixels[i][j] = new Pixel();
 
+                // Had problems with seeing colors of the buttons on Mac and this fixed it
                 String osName = System.getProperty("os.name");
                 if (osName.toLowerCase().contains("mac")) { pixels[i][j].setOpaque(true); }
 
@@ -37,6 +44,15 @@ public class Grid implements ActionListener, MouseListener
                 // Differentiating between left and right click
 
                 panel.add(pixels[i][j]);
+            }
+        }
+    }
+
+    public void resetGrid()
+    {
+        for (int x = 0; x < xGridSize; x++) {
+            for (int y = 0; y < yGridSize; y++) {
+                pixels[x][y].setState(Pixel.State.unknown);
             }
         }
     }
@@ -70,8 +86,16 @@ public class Grid implements ActionListener, MouseListener
                 y++;
             }
         }
-
         return pixelArray;
+    }
+
+    public void gameComplete()
+    {
+        for (Pixel[] pixel : pixels) {
+            for (Pixel p : pixel) {
+                if (p.getState() != Pixel.State.marked) { p.setState(Pixel.State.shaded); }
+            }
+        }
     }
 
     public void updateAction(Pixel pixel)
@@ -80,8 +104,13 @@ public class Grid implements ActionListener, MouseListener
         switch (pState)
         {
             case unknown:
-                if (lastButtonPressed == MouseEvent.BUTTON1)
-                    pixel.setState(Pixel.State.marked);
+                if (lastButtonPressed == MouseEvent.BUTTON1) {
+                    if (byteReader.getColors().length == 1)
+                        pixel.setState(Pixel.State.marked);
+                    else
+                        pixel.setMarkedState(gameView.getSelectedColor());
+                }
+
 
                 else if (lastButtonPressed == MouseEvent.BUTTON3)
                     pixel.setState(Pixel.State.shaded);
@@ -99,7 +128,10 @@ public class Grid implements ActionListener, MouseListener
 
             case shaded:
                 if (lastButtonPressed == MouseEvent.BUTTON1)
-                    pixel.setState(Pixel.State.marked);
+                    if (byteReader.getColors().length == 1)
+                        pixel.setState(Pixel.State.marked);
+                    else
+                        pixel.setMarkedState(gameView.getSelectedColor());
 
                 else if (lastButtonPressed == MouseEvent.BUTTON3)
                     pixel.setState(Pixel.State.unknown);
@@ -132,7 +164,6 @@ public class Grid implements ActionListener, MouseListener
         else if (SwingUtilities.isRightMouseButton(e))
             lastButtonPressed = MouseEvent.BUTTON3;
 
-
 //        if (lastButtonPressed == MouseEvent.BUTTON1)
 //            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Left Click"));
         if (lastButtonPressed == MouseEvent.BUTTON3)
@@ -155,13 +186,4 @@ public class Grid implements ActionListener, MouseListener
     }
 
     public void mouseExited(MouseEvent e) {}
-
-    public void gameComplete()
-    {
-        for (Pixel[] pixel : pixels) {
-            for (Pixel p : pixel) {
-                if (p.getState() != Pixel.State.marked) { p.setState(Pixel.State.shaded); }
-            }
-        }
-    }
 }

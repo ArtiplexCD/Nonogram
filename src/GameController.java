@@ -16,7 +16,7 @@ public class GameController
         this.byteReader = byteReader;
         this.isComplete = false;
 
-        this.gameComplete = new GameComplete(this, panel, buttonGridLayout);
+        this.gameComplete = new GameComplete(this, buttonGridLayout);
     }
 
     public void checkCompletion()
