@@ -1,7 +1,7 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.Arrays;
-
 public class GameView extends JFrame
 {
     private final GameController gameController;
@@ -33,7 +33,7 @@ public class GameView extends JFrame
         yGridSize = byteReader.getGridHeight();
 
         borderLayout = new BorderLayout();
-        gridLayout = new GridLayout(this.xGridSize, this.yGridSize);
+        gridLayout = new GridLayout(this.yGridSize, this.xGridSize);
         buttonGridLayout = new GridLayout(3, 1); // rows is how many buttons
 
         borderPanel = new JPanel(borderLayout);
@@ -125,7 +125,7 @@ public class GameView extends JFrame
     public int[] clueCounter(int[] gridLength)
     {
         boolean seperated = false;
-        int[] clue = new int[this.xGridSize];
+        int[] clue = new int[gridLength.length];
         int n = 0;
 
         for (int c : gridLength) {
@@ -159,31 +159,39 @@ public class GameView extends JFrame
     {
         JPanel topCluePanel = new JPanel(new GridLayout(1, yGridSize));
 
-        // TODO Fix formating
-
         for (int i = 0; i < xGridSize; i++) {
 
-            JPanel columnPanel = new JPanel(new GridLayout(xGridSize, 1));
+            int[] row = getClueColumn(i);
 
-            int[] column = getClueColumn(i);
+            int count = 0;
+            for (int r : row)
+                if (r != 0)
+                    count++;
 
-            for (int c : column)
-                if (c != 0)
-                    columnPanel.add(new JLabel(String.valueOf(c)));
+            JPanel columnPanel = new JPanel(new GridLayout(count, 1));
+
+            for (int r : row)
+                if (r != 0)
+                    columnPanel.add(new JLabel(String.valueOf(r)));
 
             topCluePanel.add(columnPanel);
         }
 
+        Border border = new EmptyBorder(0, 80, 0, -15);
+        topCluePanel.setBorder(border);
         return topCluePanel;
     }
 
     // Same as getClueColumn but gives a row
     public int[] getClueRow(int xGridRow)
     {
+        // r1c1 r1c2 r1c3
         int[] row = new int[this.xGridSize];
         int[] byteArray = byteReader.getByteArray();
 
-        System.arraycopy(byteArray, xGridRow * this.yGridSize, row, 0, this.yGridSize);
+        for (int i = 0; i < this.xGridSize; i++) {
+            row[i] = byteArray[i + xGridRow * this.xGridSize];
+        }
 
         return clueCounter(row);
     }
@@ -191,27 +199,29 @@ public class GameView extends JFrame
     // Creates a panel for the left side of the panel
     public JPanel createLeftCluePanel()
     {
-        JPanel leftCluePanel = new JPanel(new GridLayout(xGridSize, 1));
+        JPanel leftCluePanel = new JPanel(new GridLayout(yGridSize, 1));
 
         for (int i = 0; i < yGridSize; i++) {
 
-            JPanel rowPanel = new JPanel(new GridLayout(1, yGridSize));
+            JPanel rowPanel = new JPanel(new GridLayout(1, xGridSize));
 
-            int[] row = getClueRow(i);
+            int[] column = getClueRow(i);
             boolean insertedRow = false;
 
-            for (int r : row)
-                if (r != 0) {
+            for (int c : column)
+                if (c != 0) {
                     if (insertedRow)
                         rowPanel.add(new JLabel(","));
 
-                    rowPanel.add(new JLabel(String.valueOf(r)));
+                    rowPanel.add(new JLabel(String.valueOf(c)));
 
                     insertedRow = true;
                 }
 
             leftCluePanel.add(rowPanel);
         }
+        Border border = new EmptyBorder(0, 10, 0, 10);
+        leftCluePanel.setBorder(border);
         return leftCluePanel;
     }
 

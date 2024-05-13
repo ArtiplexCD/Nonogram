@@ -27,10 +27,10 @@ public class Grid implements ActionListener, MouseListener
 
     public void renderGrid()
     {
-        pixels = new Pixel[xGridSize][yGridSize];
+        pixels = new Pixel[yGridSize][xGridSize];
 
-        for (int i = 0; i < xGridSize; i++) {
-            for (int j = 0; j < yGridSize; j++) {
+        for (int i = 0; i < yGridSize; i++) {
+            for (int j = 0; j < xGridSize; j++) {
 
                 pixels[i][j] = new Pixel();
 

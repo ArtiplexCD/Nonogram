@@ -22,6 +22,11 @@ public class Pixel extends JButton
         updateColor();
     }
 
+    public State getState()
+    {
+        return this.state;
+    }
+
     public void setState(State state)
     {
         this.state = state;
@@ -32,11 +37,6 @@ public class Pixel extends JButton
     {
         this.state = State.marked;
         updateColor(color);
-    }
-
-    public State getState()
-    {
-        return this.state;
     }
 
     public void setColor(Color color)
