@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 
 public class GameController
@@ -9,13 +10,13 @@ public class GameController
     private final ByteReader byteReader;
     private final GameComplete gameComplete;
 
-    public GameController(Grid grid, ByteReader byteReader, JPanel panel, JFrame frame)
+    public GameController(Grid grid, ByteReader byteReader, JPanel panel, GridLayout buttonGridLayout)
     {
         this.grid = grid;
         this.byteReader = byteReader;
         this.isComplete = false;
 
-        this.gameComplete = new GameComplete(this, panel, frame);
+        this.gameComplete = new GameComplete(this, panel, buttonGridLayout);
     }
 
     public void checkCompletion()

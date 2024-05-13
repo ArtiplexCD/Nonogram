@@ -11,13 +11,11 @@ public class ByteReader
 
     private int[] byteArray;
 
-    private int[] colors = new int[0];
+    private Color[] colors = new Color[0];
 
     public ByteReader(String BMPFileName) throws IOException
     {
         this.image = ImageIO.read(new File(BMPFileName));
-
-        initializeColors();
     }
 
     public void seeBMPImage()
@@ -32,7 +30,7 @@ public class ByteReader
 
             int color = image.getRGB(x, y);
 
-            if (color == Color.black.getRGB())
+            if (color != Color.white.getRGB())
                 byteArray[n] = 1;
 
             else
@@ -56,11 +54,13 @@ public class ByteReader
 
     public int getGridSize(boolean ifx)
     {
-        return ifx ? this.image.getWidth() : this.image.getHeight();
+        return ifx ? image.getWidth() : image.getHeight();
     }
 
-    public int[] getColors()
+    public Color[] getColors()
     {
+        initializeColors();
+        System.out.println(Arrays.toString(colors));
         return colors;
     }
 
@@ -74,26 +74,34 @@ public class ByteReader
 
         while (n < image.getWidth() * image.getHeight()) {
 
-            int color = image.getRGB(x, y);
-            int white = (color >> 24) & 0xff;
+            int rgb = image.getRGB(x, y);
+            Color color = new Color(rgb);
+            if (color.equals(Color.white)) {
+                n++;
+                x++;
+                if (x == image.getWidth()) {
+                    y++;
+                    x = 0;
+                }
+                continue;
+            }
 
-            boolean newColor = true;
 
-            for (int c : colors) {
-                if ((c == color) || (color == white)) {
-                    newColor = false;
+            boolean isNewColor = true;
+
+            for (Color c : colors) {
+                if (c != null && c.equals(color)) {
+                    isNewColor = false;
                     break;
                 }
             }
 
-            if (newColor /*&& colors.length != 0 */) {
+            if (isNewColor) {
+                //System.out.println("New color: " + rgb);
                 increaseSize();
-
                 colors[i] = color;
-
                 i++;
             }
-            System.out.println("Color: " + Arrays.toString(colors));
 
             n++;
             x++;
@@ -105,11 +113,12 @@ public class ByteReader
         }
     }
 
-    public void increaseSize() {
-        int[] temp = new int[colors.length + 1];
+    public void increaseSize()
+    {
+            Color[] temp = new Color[colors.length + 1];
 
-        System.arraycopy(colors, 0, temp, 0, colors.length);
+            System.arraycopy(colors, 0, temp, 0, colors.length);
 
-        colors = temp;
+            colors = temp;
     }
 }

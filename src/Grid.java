@@ -118,32 +118,40 @@ public class Grid implements ActionListener, MouseListener
     public void mouseClicked(MouseEvent e)
     {
         // TODO to make mouse dragged using this is very simple would just need to include left pressed to be manually started
-        if (lastButtonPressed == MouseEvent.BUTTON1)
-            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
+//        if (lastButtonPressed == MouseEvent.BUTTON1)
+//            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Left Click"));
+//
+//        else if (lastButtonPressed == MouseEvent.BUTTON3)
+//            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
     }
 
     public void mousePressed(MouseEvent e)
     {
-        if (SwingUtilities.isRightMouseButton(e))
+        if (SwingUtilities.isLeftMouseButton(e))
+            lastButtonPressed = MouseEvent.BUTTON1;
+        else if (SwingUtilities.isRightMouseButton(e))
             lastButtonPressed = MouseEvent.BUTTON3;
 
-        else if (SwingUtilities.isLeftMouseButton(e))
-            lastButtonPressed = MouseEvent.BUTTON1;
 
-        // Not sure how this works tbh but it works
+//        if (lastButtonPressed == MouseEvent.BUTTON1)
+//            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Left Click"));
         if (lastButtonPressed == MouseEvent.BUTTON3)
             actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
     }
 
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(MouseEvent e)
+    {
         lastButtonPressed = -1;
     }
 
     public void mouseEntered(MouseEvent e)
     {
         //TODO to make mouseDrag work
-        if (lastButtonPressed == MouseEvent.BUTTON1)
-            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
+//        if (lastButtonPressed == MouseEvent.BUTTON1)
+//            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Left Click"));
+//
+//        else if (lastButtonPressed == MouseEvent.BUTTON3)
+//            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
     }
 
     public void mouseExited(MouseEvent e) {}

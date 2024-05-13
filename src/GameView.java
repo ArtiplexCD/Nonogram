@@ -14,9 +14,11 @@ public class GameView extends JFrame
 
     private BorderLayout borderLayout;
     private GridLayout gridLayout;
+    private GridLayout buttonGridLayout;
 
     private JPanel borderPanel;
     private JPanel gridPanel;
+    private JPanel buttonPanel;
 
     private JFrame frame;
 
@@ -27,53 +29,85 @@ public class GameView extends JFrame
     {
         this.byteReader = byteReader;
 
-        this.xGridSize = byteReader.getGridSize(true);
+        xGridSize = byteReader.getGridSize(true);
         yGridSize = byteReader.getGridSize(false);
 
         borderLayout = new BorderLayout();
         gridLayout = new GridLayout(this.xGridSize, this.yGridSize);
+        buttonGridLayout = new GridLayout(2, 1);
 
         borderPanel = new JPanel(borderLayout);
         gridPanel = new JPanel(gridLayout);
+        buttonPanel = new JPanel(buttonGridLayout);
 
         borderPanel.setLayout(borderLayout);
         borderPanel.add(gridPanel, BorderLayout.CENTER);
-
-        clueDisplay();
 
         frame = new JFrame("Hanjie Puzzle Game");
         frame.setContentPane(borderPanel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(750, 750);
 
-        grid = new Grid(xGridSize, yGridSize, this.gridPanel);
+        grid = new Grid(xGridSize, yGridSize, gridPanel);
 
-        gameController = new GameController(grid, byteReader, borderPanel, frame);
+        gameController = new GameController(grid, byteReader, borderPanel, buttonGridLayout);
+
+        clueDisplay();
+
+        createColorPalette();
+        createCompletionButton();
+        buttonsDisplay();
 
         frame.setVisible(true);
     }
 
-    private void createColorPalette()
+    public void buttonsDisplay()
+    {
+        borderPanel.add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    public void createCompletionButton()
+    {
+        JButton completionButton = new JButton("See if you got it right!");
+
+        completionButton.addActionListener(e -> gameController.checkCompletion() );
+
+        buttonPanel.add(completionButton);
+    }
+
+    public void setSelectedColor(Color color)
+    {
+        selectedColor = color;
+    }
+
+    public void createColorPalette()
     {
         colorPalette = new JPanel(new FlowLayout());
 
-        JButton colorButton1 = new JButton();
+        Color[] colors = byteReader.getColors();
 
-        colorButton1.setBackground(Color.BLACK);
+        for (int i = 0; i < colors.length; i++) {
+            JButton button = new JButton();
+            button.setBackground(colors[i]);
+            selectedColor = colors[i];
+            button.addActionListener(e -> setSelectedColor(selectedColor));
+            colorPalette.add(button);
+        }
 
-        colorButton1.addActionListener(e -> selectedColor = Color.BLACK);
+//        JButton colorButton1 = new JButton();
+//
+//        colorButton1.setBackground(Color.BLACK);
+//        colorButton1.addActionListener(e -> selectedColor = Color.BLACK);
+//
+//        JButton colorButton2 = new JButton();
+//
+//        colorButton2.setBackground(Color.RED);
+//        colorButton2.addActionListener(e -> selectedColor = Color.RED);
+//
+//        colorPalette.add(colorButton1);
+//        colorPalette.add(colorButton2);
 
-        JButton colorButton2 = new JButton();
-
-        colorButton2.setBackground(Color.RED);
-
-        colorButton2.addActionListener(e -> selectedColor = Color.RED);
-
-        colorPalette.add(colorButton1);
-
-        colorPalette.add(colorButton2);
-
-        add(colorPalette, BorderLayout.SOUTH);
+        buttonPanel.add(colorPalette);
     }
 
     public int[] clueCounter(int[] gridLength)
@@ -100,7 +134,14 @@ public class GameView extends JFrame
         int[] column = new int[this.xGridSize];
         int[] byteArray = byteReader.getByteArray();
 
-        System.arraycopy(byteArray, yGridRow * this.xGridSize, column, 0, this.xGridSize);
+        System.out.println("xGridSize" + xGridSize);
+        System.out.println("yGridSize" + yGridSize);
+
+        System.arraycopy(byteArray, yGridRow * xGridSize, column, 0, xGridSize);
+
+//        for (int i = 0; i < this.yGridSize; i++) {
+//            column[i] = byteArray[i * this.xGridSize + yGridRow];
+//        }
 
         return clueCounter(column);
     }
@@ -110,7 +151,7 @@ public class GameView extends JFrame
         int[] row = new int[this.xGridSize];
         int[] byteArray = byteReader.getByteArray();
 
-        System.arraycopy(byteArray, xGridRow * this.yGridSize, row, 0, this.xGridSize);
+        System.arraycopy(byteArray, xGridRow * yGridSize, row, 0, yGridSize);
 
         return clueCounter(row);
     }
@@ -133,6 +174,7 @@ public class GameView extends JFrame
 
             topCluePanel.add(columnPanel);
         }
+
         return topCluePanel;
     }
 
@@ -156,7 +198,6 @@ public class GameView extends JFrame
 
                     insertedRow = true;
                 }
-
 
             leftCluePanel.add(rowPanel);
         }

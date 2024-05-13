@@ -10,19 +10,17 @@ public class GameComplete implements ActionListener
 
     JFrame frame;
 
-    public GameComplete(GameController gameController, JPanel panel, JFrame frame)
+    public GameComplete(GameController gameController, JPanel borderPanel, GridLayout buttonGridLayout)
     {
         this.gameController = gameController;
 
         button = new JButton();
 
-        this.frame = frame;
-
         button.addActionListener(this);
 
-        panel.add(button, BorderLayout.SOUTH);
+        buttonGridLayout.addLayoutComponent("Check completion button" ,button);
 
-        button.setText("Check If Complete new");
+        button.setText("Check If Complete");
     }
 
     public void actionPerformed(ActionEvent e)
@@ -32,15 +30,11 @@ public class GameComplete implements ActionListener
 
     public void showCompletionMessage()
     {
-        JLabel label = new JLabel("Congratulations!");
-
-        frame.setTitle("Complete Hanjie Puzzle Game");
+        JOptionPane.showMessageDialog(frame, "Congratulations you got it right!");
     }
 
     public void showNotCompleteMessage()
     {
-        JLabel label = new JLabel("Not Congratulations!");
-
-        frame.setTitle("Not Complete Hanjie Puzzle Game");
+        JOptionPane.showMessageDialog(frame, "Not quite there yet");
     }
 }
