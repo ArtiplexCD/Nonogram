@@ -2,8 +2,8 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-public class GameView extends JFrame
-{
+
+public class GameView extends JFrame {
     private final GameController gameController;
     private final ByteReader byteReader;
 
@@ -23,17 +23,16 @@ public class GameView extends JFrame
     private JFrame frame;
 
     private JPanel colorPalette;
-    private Color selectedColor = Color.BLACK; // Default color
+    private Color selectedColor;
 
-    public GameView(ByteReader byteReader)
-    {
+    public GameView(ByteReader byteReader) {
         this.byteReader = byteReader;
 
         xGridSize = byteReader.getGridWidth();
         yGridSize = byteReader.getGridHeight();
 
         borderLayout = new BorderLayout();
-        gridLayout = new GridLayout(this.yGridSize, this.xGridSize);
+        gridLayout = new GridLayout(this.xGridSize, this.yGridSize);
         buttonGridLayout = new GridLayout(3, 1); // rows is how many buttons
 
         borderPanel = new JPanel(borderLayout);
@@ -48,9 +47,9 @@ public class GameView extends JFrame
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(750, 750);
 
-        grid = new Grid(xGridSize, yGridSize, gridPanel, this, byteReader);
+        grid = new Grid(yGridSize, xGridSize, gridPanel, this, byteReader);
 
-        gameController = new GameController(grid, byteReader, borderPanel, buttonGridLayout);
+        gameController = new GameController(grid, byteReader, buttonGridLayout);
 
         clueDisplay();
         buttonsDisplay();
@@ -58,8 +57,7 @@ public class GameView extends JFrame
         frame.setVisible(true);
     }
 
-    public void buttonsDisplay()
-    {
+    public void buttonsDisplay() {
         createColorPalette();
         createCompletionButton();
         createResetButton();
@@ -68,18 +66,16 @@ public class GameView extends JFrame
     }
 
     // Button to check if game is complete
-    public void createCompletionButton()
-    {
+    public void createCompletionButton() {
         JButton completionButton = new JButton("See if you got it right!");
 
-        completionButton.addActionListener(e -> gameController.checkCompletion() );
+        completionButton.addActionListener(e -> gameController.checkCompletion());
 
         buttonPanel.add(completionButton);
     }
 
     // Button to reset the board
-    public void createResetButton()
-    {
+    public void createResetButton() {
         JButton resetButton = new JButton("Reset");
 
         resetButton.addActionListener(e -> grid.resetGrid());
@@ -87,18 +83,15 @@ public class GameView extends JFrame
         buttonPanel.add(resetButton);
     }
 
-    public void setSelectedColor(Color color)
-    {
+    public void setSelectedColor(Color color) {
         selectedColor = color;
     }
 
-    public Color getSelectedColor()
-    {
+    public Color getSelectedColor() {
         return selectedColor;
     }
 
-    public void createColorPalette()
-    {
+    public void createColorPalette() {
         Color[] colors = byteReader.getColors();
         if (colors.length == 1) {
             return;
@@ -111,19 +104,28 @@ public class GameView extends JFrame
             button.setBackground(color);
 
             selectedColor = color;
-            button.addActionListener(e -> setSelectedColor(selectedColor));
+
+            button.addActionListener(e -> {
+                JButton btn = (JButton) e.getSource();
+                setSelectedColor(btn.getBackground());
+            });
+
+            button.setText(" ");
             colorPalette.add(button);
 
             // Had problems with seeing colors of the buttons on Mac and this fixed it
             String osName = System.getProperty("os.name");
-            if (osName.toLowerCase().contains("mac")) { button.setOpaque(true); }
+            if (osName.toLowerCase().contains("mac")) {
+                button.setOpaque(true);
+            }
         }
+        selectedColor = Color.BLACK; // Default color
+
         buttonPanel.add(colorPalette);
     }
 
     // Computes the clues into correct format
-    public int[] clueCounter(int[] gridLength)
-    {
+    public int[] clueCounter(int[] gridLength) {
         boolean seperated = false;
         int[] clue = new int[gridLength.length];
         int n = 0;
@@ -142,24 +144,22 @@ public class GameView extends JFrame
     }
 
     // Takes the placement of the column of which current needs the column for and returns the clue format
-    public int[] getClueColumn(int yGridRow)
-    {
-        int[] column = new int[this.xGridSize];
+    public int[] getClueColumn(int yGridRow) {
+        int[] column = new int[this.yGridSize];
         int[] byteArray = byteReader.getByteArray();
 
-        for (int i = 0; i < this.yGridSize; i++) {
-            column[i] = byteArray[i * this.xGridSize + yGridRow];
+        for (int i = 0; i < this.xGridSize; i++) {
+            column[i] = byteArray[i * this.yGridSize + yGridRow];
         }
 
         return clueCounter(column);
     }
 
     // Creates a panel for the top side of the panel
-    public JPanel createTopCluePanel()
-    {
-        JPanel topCluePanel = new JPanel(new GridLayout(1, yGridSize));
+    public JPanel createTopCluePanel() {
+        JPanel topCluePanel = new JPanel(new GridLayout(1, xGridSize));
 
-        for (int i = 0; i < xGridSize; i++) {
+        for (int i = 0; i < yGridSize; i++) {
 
             int[] row = getClueColumn(i);
 
@@ -183,27 +183,24 @@ public class GameView extends JFrame
     }
 
     // Same as getClueColumn but gives a row
-    public int[] getClueRow(int xGridRow)
-    {
-        // r1c1 r1c2 r1c3
-        int[] row = new int[this.xGridSize];
+    public int[] getClueRow(int xGridRow) {
+        int[] row = new int[this.yGridSize];
         int[] byteArray = byteReader.getByteArray();
 
-        for (int i = 0; i < this.xGridSize; i++) {
-            row[i] = byteArray[i + xGridRow * this.xGridSize];
+        for (int i = 0; i < this.yGridSize; i++) {
+            row[i] = byteArray[i + xGridRow * this.yGridSize];
         }
 
         return clueCounter(row);
     }
 
     // Creates a panel for the left side of the panel
-    public JPanel createLeftCluePanel()
-    {
-        JPanel leftCluePanel = new JPanel(new GridLayout(yGridSize, 1));
+    public JPanel createLeftCluePanel() {
+        JPanel leftCluePanel = new JPanel(new GridLayout(xGridSize, 1));
 
-        for (int i = 0; i < yGridSize; i++) {
+        for (int i = 0; i < xGridSize; i++) {
 
-            JPanel rowPanel = new JPanel(new GridLayout(1, xGridSize));
+            JPanel rowPanel = new JPanel(new GridLayout(1, yGridSize));
 
             int[] column = getClueRow(i);
             boolean insertedRow = false;
@@ -225,8 +222,7 @@ public class GameView extends JFrame
         return leftCluePanel;
     }
 
-    public void clueDisplay()
-    {
+    public void clueDisplay() {
         borderPanel.add(createTopCluePanel(), BorderLayout.NORTH);
         borderPanel.add(createLeftCluePanel(), BorderLayout.WEST);
     }

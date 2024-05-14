@@ -3,25 +3,21 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
-public class ByteReader
-{
+public class ByteReader {
     private BufferedImage image;
 
     private int[] byteArray;
 
     private Color[] colors = new Color[0];
 
-    //
-    public ByteReader(String BMPFileName) throws IOException
-    {
+
+    public ByteReader(String BMPFileName) throws IOException {
         this.image = ImageIO.read(new File(BMPFileName));
     }
 
     // Trying to combine seeBMPImage and initializeColors into one method
-    public void initializeBMPImage()
-    {
+    public void initializeBMPImage() {
         byteArray = new int[image.getWidth() * image.getHeight()];
 
         boolean isNewColor = false;
@@ -76,8 +72,7 @@ public class ByteReader
     }
 
     // Initializes byteArray with the image
-    public void seeBMPImage()
-    {
+    public void seeBMPImage() {
         byteArray = new int[image.getWidth() * image.getHeight()];
 
         int n = 0;
@@ -105,25 +100,23 @@ public class ByteReader
         }
     }
 
-    public int[] getByteArray()
-    {
+    public int[] getByteArray() {
         seeBMPImage();
         return byteArray;
     }
 
-    public int getGridWidth()
-    {
-        return image.getWidth();
-    }
-
-    public int getGridHeight()
-    {
+    // Gets Width because height is actually width as the ByteArray is being read from top to bottom
+    public int getGridWidth() {
         return image.getHeight();
     }
 
+    // Gets height because width is actually height as the ByteArray is being read from top to bottom
+    public int getGridHeight() {
+        return image.getWidth();
+    }
+
     // Initializes colors with all the types of colors in the image provided
-    public void initializeColors()
-    {
+    public void initializeColors() {
         boolean isNewColor;
 
         int n = 0;
@@ -173,17 +166,14 @@ public class ByteReader
     }
 
     // Increases size of colors
-    public void increaseSize()
-    {
-            Color[] temp = new Color[colors.length + 1];
-            System.arraycopy(colors, 0, temp, 0, colors.length);
-            colors = temp;
+    public void increaseSize() {
+        Color[] temp = new Color[colors.length + 1];
+        System.arraycopy(colors, 0, temp, 0, colors.length);
+        colors = temp;
     }
 
-    public Color[] getColors()
-    {
+    public Color[] getColors() {
         initializeColors();
-        System.out.println(Arrays.toString(colors));
         return colors;
     }
 }

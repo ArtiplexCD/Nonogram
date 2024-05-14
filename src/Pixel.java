@@ -1,20 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Pixel extends JButton
-{
+public class Pixel extends JButton {
     private State state;
 
     // Trying to use as identifiers
-    enum State
-    {
+    enum State {
         unknown,
         shaded,
-        marked;
+        marked
     }
 
-    public Pixel()
-    {
+    public Pixel() {
         super();
 
         this.state = State.unknown;
@@ -22,31 +19,26 @@ public class Pixel extends JButton
         updateColor();
     }
 
-    public State getState()
-    {
+    public State getState() {
         return this.state;
     }
 
-    public void setState(State state)
-    {
+    public void setState(State state) {
         this.state = state;
         updateColor();
     }
 
-    public void setMarkedState(Color color)
-    {
+    public void setMarkedState(Color color) {
         this.state = State.marked;
         updateColor(color);
     }
 
-    public void setColor(Color color)
-    {
+    public void setColor(Color color) {
         this.setBackground(color);
     }
 
-    public void updateColor()
-    {
-        switch(state) {
+    public void updateColor() {
+        switch (state) {
             case unknown:
                 this.setBackground(Color.decode("#FFDF00"));
                 break;
@@ -61,9 +53,8 @@ public class Pixel extends JButton
         }
     }
 
-    public void updateColor(Color color)
-    {
-        switch(state) {
+    public void updateColor(Color color) {
+        switch (state) {
 
             case unknown:
                 this.setBackground(Color.decode("#FFDF00"));

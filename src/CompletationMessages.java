@@ -1,23 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
-public class CompletationMessages
-{
+public class CompletationMessages {
     private final JPanel borderPanel;
     private JLabel messageLabel;
     private Timer timer;
     private float timing = 1.0f;
 
-    public CompletationMessages(JPanel borderPanel)
-    {
+    public CompletationMessages(JPanel borderPanel) {
         this.borderPanel = borderPanel;
     }
 
-    public void createAndShowCorrectMessage()
-    {
+    public void createAndShowCorrectMessage() {
         messageLabel = new JLabel("You got in correct congratulations");
         borderPanel.add(messageLabel, BorderLayout.CENTER);
 
@@ -26,15 +21,13 @@ public class CompletationMessages
             if (timing <= 0) {
                 timer.stop();
                 borderPanel.remove(messageLabel);
-            }
-            else
+            } else
                 updateTiming();
         });
 
     }
 
-    public void createAndShowIncorrectMessage()
-    {
+    public void createAndShowIncorrectMessage() {
         messageLabel = new JLabel("You got it wrong");
         borderPanel.add(messageLabel, BorderLayout.CENTER);
 
@@ -43,15 +36,13 @@ public class CompletationMessages
             if (timing <= 0) {
                 timer.stop();
                 borderPanel.remove(messageLabel);
-            }
-            else
+            } else
                 updateTiming();
         });
 
     }
 
-    private void updateTiming()
-    {
+    private void updateTiming() {
         BufferedImage image = new BufferedImage(borderPanel.getWidth(), borderPanel.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();
         graphics.setComposite(AlphaComposite.SrcOver.derive(timing));
