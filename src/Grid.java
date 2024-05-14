@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 
 public class Grid implements ActionListener, MouseListener {
     private int xGridSize;
@@ -51,8 +52,8 @@ public class Grid implements ActionListener, MouseListener {
     }
 
     public void resetGrid() {
-        for (int x = 0; x < yGridSize; x++) {
-            for (int y = 0; y < xGridSize; y++) {
+        for (int x = 0; x < xGridSize; x++) {
+            for (int y = 0; y < yGridSize; y++) {
                 pixels[x][y].setState(Pixel.State.unknown);
             }
         }
@@ -60,39 +61,45 @@ public class Grid implements ActionListener, MouseListener {
 
     //Gets the byte map of marked game
     public int[] getPixel() {
-        int[] pixelArray = new int[yGridSize * xGridSize];
+        int[] pixelArray = new int[xGridSize * yGridSize];
 
         int n = 0;
         int x = 0;
         int y = 0;
 
-        while (n <= yGridSize * xGridSize - 1) {
-            Pixel.State state = pixels[y][x].getState();
+        while (n <= xGridSize * yGridSize - 1) {
+            Pixel.State state = pixels[x][y].getState();
 
-            if (state == Pixel.State.marked)
-                pixelArray[n] = 1;
+            if (state == Pixel.State.marked) {
+                if (byteReader.getColors().length == 1)
+                    pixelArray[n] = 1;
+                else {
+                    // TODO figure out how to make it detect color and give it a number based on the color
+                }
+            }
 
             else if (state == Pixel.State.shaded)
-                pixelArray[n] = 2;
+                pixelArray[n] = 0;
 
             else
                 pixelArray[n] = 0;
 
-            x++;
+            y++;
             n++;
 
-            if (x == xGridSize) {
-                x = 0;
-                y++;
+            if (y == yGridSize) {
+                y = 0;
+                x++;
             }
         }
+        //System.out.println("Pixelarray = " + Arrays.toString(pixelArray));
         return pixelArray;
     }
 
     public void gameComplete() {
         for (Pixel[] pixel : pixels) {
             for (Pixel p : pixel) {
-                if (p.getState() != Pixel.State.marked) {
+                if (p.getState() == Pixel.State.unknown) {
                     p.setState(Pixel.State.shaded);
                 }
             }

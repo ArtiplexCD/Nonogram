@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ByteReader {
     private BufferedImage image;
@@ -11,16 +12,18 @@ public class ByteReader {
 
     private Color[] colors = new Color[0];
 
-
     public ByteReader(String BMPFileName) throws IOException {
         this.image = ImageIO.read(new File(BMPFileName));
+        //seeBMPImage();
+        initializeBMPImage();
     }
 
     // Trying to combine seeBMPImage and initializeColors into one method
+    // Initializes byteArray with the image and initializes colors with all the types of colors in the image provided
     public void initializeBMPImage() {
         byteArray = new int[image.getWidth() * image.getHeight()];
 
-        boolean isNewColor = false;
+        boolean isNewColor;
 
         int n = 0;
         int x = 0;
@@ -33,18 +36,29 @@ public class ByteReader {
             Color color = new Color(rgb);
 
             if (color.equals(Color.white)) {
+
                 byteArray[n] = 0;
+
                 n++;
                 x++;
+
                 if (x == image.getWidth()) {
-                    y++;
                     x = 0;
+                    y++;
                 }
                 continue;
             }
 
 
             isNewColor = true;
+
+            for (int index = 0; index < colors.length; index++) {
+                byteArray[n] = index + 1;
+                if (colors[index] != null && colors[index].equals(color)) {
+                    isNewColor = false;
+                    break;
+                }
+            }
 
             for (Color c : colors) {
                 if (c != null && c.equals(color)) {
@@ -54,6 +68,7 @@ public class ByteReader {
             }
 
             if (isNewColor) {
+                byteArray[n] += 1;
                 increaseSize();
                 colors[i] = color;
                 i++;
@@ -66,42 +81,39 @@ public class ByteReader {
                 y++;
                 x = 0;
             }
-
-
         }
+        System.out.println(Arrays.toString(byteArray));
     }
 
     // Initializes byteArray with the image
-    public void seeBMPImage() {
-        byteArray = new int[image.getWidth() * image.getHeight()];
-
-        int n = 0;
-        int x = 0;
-        int y = 0;
-
-        while (n <= image.getWidth() * image.getHeight() - 1) {
-
-            int rgb = image.getRGB(x, y);
-            Color color = new Color(rgb);
-
-            if (!color.equals(Color.white))
-                byteArray[n] = 1;
-
-            else
-                byteArray[n] = 0;
-
-            n++;
-            x++;
-
-            if (x == image.getWidth()) {
-                y++;
-                x = 0;
-            }
-        }
-    }
-
+//    public void seeBMPImage() {
+//        byteArray = new int[image.getWidth() * image.getHeight()];
+//
+//        int n = 0;
+//        int x = 0;
+//        int y = 0;
+//
+//        while (n <= image.getWidth() * image.getHeight() - 1) {
+//
+//            int rgb = image.getRGB(x, y);
+//            Color color = new Color(rgb);
+//
+//            if (!color.equals(Color.white))
+//                byteArray[n] = 1;
+//
+//            else
+//                byteArray[n] = -1;
+//
+//            n++;
+//            x++;
+//
+//            if (x == image.getWidth()) {
+//                y++;
+//                x = 0;
+//            }
+//        }
+//    }
     public int[] getByteArray() {
-        seeBMPImage();
         return byteArray;
     }
 
@@ -116,64 +128,64 @@ public class ByteReader {
     }
 
     // Initializes colors with all the types of colors in the image provided
-    public void initializeColors() {
-        boolean isNewColor;
+//    public void initializeColors() {
+//        boolean isNewColor;
+//
+//        int n = 0;
+//        int i = 0;
+//
+//        int x = 0;
+//        int y = 0;
+//
+//        while (n < image.getWidth() * image.getHeight()) {
+//
+//            int rgb = image.getRGB(x, y);
+//            Color color = new Color(rgb);
+//
+//            if (color.equals(Color.white)) {
+//                n++;
+//                x++;
+//                if (x == image.getWidth()) {
+//                    y++;
+//                    x = 0;
+//                }
+//                continue;
+//            }
+//
+//            isNewColor = true;
+//
+//            for (Color c : colors) {
+//                if (c != null && c.equals(color)) {
+//                    isNewColor = false;
+//                    break;
+//                }
+//            }
+//
+//            if (isNewColor) {
+//                increaseSize();
+//                colors[i] = color;
+//                i++;
+//            }
+//
+//            n++;
+//            x++;
+//
+//            if (x == image.getWidth()) {
+//                y++;
+//                x = 0;
+//            }
+//        }
+//    }
 
-        int n = 0;
-        int i = 0;
-
-        int x = 0;
-        int y = 0;
-
-        while (n < image.getWidth() * image.getHeight()) {
-
-            int rgb = image.getRGB(x, y);
-            Color color = new Color(rgb);
-
-            if (color.equals(Color.white)) {
-                n++;
-                x++;
-                if (x == image.getWidth()) {
-                    y++;
-                    x = 0;
-                }
-                continue;
-            }
-
-            isNewColor = true;
-
-            for (Color c : colors) {
-                if (c != null && c.equals(color)) {
-                    isNewColor = false;
-                    break;
-                }
-            }
-
-            if (isNewColor) {
-                increaseSize();
-                colors[i] = color;
-                i++;
-            }
-
-            n++;
-            x++;
-
-            if (x == image.getWidth()) {
-                y++;
-                x = 0;
-            }
-        }
-    }
-
-    // Increases size of colors
+    // Increases size of variable colors
     public void increaseSize() {
         Color[] temp = new Color[colors.length + 1];
         System.arraycopy(colors, 0, temp, 0, colors.length);
         colors = temp;
     }
 
+
     public Color[] getColors() {
-        initializeColors();
         return colors;
     }
 }

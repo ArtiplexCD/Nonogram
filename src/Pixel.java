@@ -37,6 +37,10 @@ public class Pixel extends JButton {
         this.setBackground(color);
     }
 
+    public Color getColor() {
+        return this.getBackground();
+    }
+
     public void updateColor() {
         switch (state) {
             case unknown:

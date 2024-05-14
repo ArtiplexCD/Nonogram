@@ -4,10 +4,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         String elephant = "bmpFiles/elephant.bmp";
-        String colorElephant = "bmpFiles/2color_elephant.bmp";
+        String elephant2 = "bmpFiles/2color_elephant.bmp";
         String basketball = "bmpFiles/3color_basketball.bmp";
 
-        String image = elephant;
+        String image = elephant2;
 
         ByteReader byteReader = new ByteReader(image);
 
