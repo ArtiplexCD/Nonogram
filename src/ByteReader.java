@@ -18,7 +18,7 @@ public class ByteReader {
         initializeBMPImage();
     }
 
-    // Trying to combine seeBMPImage and initializeColors into one method
+
     // Initializes byteArray with the image and initializes colors with all the types of colors in the image provided
     public void initializeBMPImage() {
         byteArray = new int[image.getWidth() * image.getHeight()];
@@ -30,7 +30,7 @@ public class ByteReader {
         int y = 0;
         int i = 0;
 
-        while (n < image.getWidth() * image.getHeight() - 1) {
+        while (n < image.getWidth() * image.getHeight()) {
 
             int rgb = image.getRGB(x, y);
             Color color = new Color(rgb);
@@ -82,37 +82,9 @@ public class ByteReader {
                 x = 0;
             }
         }
-        System.out.println(Arrays.toString(byteArray));
+        //System.out.println(Arrays.toString(byteArray));
     }
 
-    // Initializes byteArray with the image
-//    public void seeBMPImage() {
-//        byteArray = new int[image.getWidth() * image.getHeight()];
-//
-//        int n = 0;
-//        int x = 0;
-//        int y = 0;
-//
-//        while (n <= image.getWidth() * image.getHeight() - 1) {
-//
-//            int rgb = image.getRGB(x, y);
-//            Color color = new Color(rgb);
-//
-//            if (!color.equals(Color.white))
-//                byteArray[n] = 1;
-//
-//            else
-//                byteArray[n] = -1;
-//
-//            n++;
-//            x++;
-//
-//            if (x == image.getWidth()) {
-//                y++;
-//                x = 0;
-//            }
-//        }
-//    }
     public int[] getByteArray() {
         return byteArray;
     }
@@ -127,56 +99,6 @@ public class ByteReader {
         return image.getWidth();
     }
 
-    // Initializes colors with all the types of colors in the image provided
-//    public void initializeColors() {
-//        boolean isNewColor;
-//
-//        int n = 0;
-//        int i = 0;
-//
-//        int x = 0;
-//        int y = 0;
-//
-//        while (n < image.getWidth() * image.getHeight()) {
-//
-//            int rgb = image.getRGB(x, y);
-//            Color color = new Color(rgb);
-//
-//            if (color.equals(Color.white)) {
-//                n++;
-//                x++;
-//                if (x == image.getWidth()) {
-//                    y++;
-//                    x = 0;
-//                }
-//                continue;
-//            }
-//
-//            isNewColor = true;
-//
-//            for (Color c : colors) {
-//                if (c != null && c.equals(color)) {
-//                    isNewColor = false;
-//                    break;
-//                }
-//            }
-//
-//            if (isNewColor) {
-//                increaseSize();
-//                colors[i] = color;
-//                i++;
-//            }
-//
-//            n++;
-//            x++;
-//
-//            if (x == image.getWidth()) {
-//                y++;
-//                x = 0;
-//            }
-//        }
-//    }
-
     // Increases size of variable colors
     public void increaseSize() {
         Color[] temp = new Color[colors.length + 1];
@@ -184,8 +106,15 @@ public class ByteReader {
         colors = temp;
     }
 
-
     public Color[] getColors() {
         return colors;
+    }
+
+    public int getColorsIndex(Color color) {
+        for (int i = 0; i < colors.length; i++)
+            if (colors[i].equals(color))
+                return i + 1;
+
+        return 0;
     }
 }

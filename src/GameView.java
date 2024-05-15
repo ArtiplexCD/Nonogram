@@ -193,7 +193,7 @@ public class GameView extends JFrame {
             row[i] = byteArray[i + xGridRow * this.yGridSize];
         }
 
-        System.out.println(Arrays.toString(row));
+        //System.out.println(Arrays.toString(row));
 
 
         return clueCounter(row);

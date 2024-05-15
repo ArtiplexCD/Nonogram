@@ -68,21 +68,9 @@ public class Grid implements ActionListener, MouseListener {
         int y = 0;
 
         while (n <= xGridSize * yGridSize - 1) {
-            Pixel.State state = pixels[x][y].getState();
-
-            if (state == Pixel.State.marked) {
-                if (byteReader.getColors().length == 1)
-                    pixelArray[n] = 1;
-                else {
-                    // TODO figure out how to make it detect color and give it a number based on the color
-                }
-            }
-
-            else if (state == Pixel.State.shaded)
-                pixelArray[n] = 0;
-
-            else
-                pixelArray[n] = 0;
+            /* Checks if it is one of the colors available and if not it returns 0
+             if yes it gives appropriate index for color */
+            pixelArray[n] = byteReader.getColorsIndex(pixels[x][y].getColor());
 
             y++;
             n++;
@@ -96,6 +84,7 @@ public class Grid implements ActionListener, MouseListener {
         return pixelArray;
     }
 
+    // Makes all of the yellow pixels into white
     public void gameComplete() {
         for (Pixel[] pixel : pixels) {
             for (Pixel p : pixel) {
@@ -106,23 +95,34 @@ public class Grid implements ActionListener, MouseListener {
         }
     }
 
+    // Updates pixels into appropriate State and color
     public void updateAction(Pixel pixel) {
         Pixel.State pState = pixel.getState();
+
         switch (pState) {
             case unknown:
                 if (lastButtonPressed == MouseEvent.BUTTON1) {
+
                     if (byteReader.getColors().length == 1)
                         pixel.setState(Pixel.State.marked);
+
                     else
                         pixel.setMarkedState(gameView.getSelectedColor());
-                } else if (lastButtonPressed == MouseEvent.BUTTON3)
+                }
+                else if (lastButtonPressed == MouseEvent.BUTTON3)
                     pixel.setState(Pixel.State.shaded);
 
                 break;
 
             case marked:
-                if (lastButtonPressed == MouseEvent.BUTTON1)
-                    pixel.setState(Pixel.State.unknown);
+                if (lastButtonPressed == MouseEvent.BUTTON1) {
+
+                    if (pixel.getColor() == gameView.getSelectedColor() || byteReader.getColors().length == 1)
+                        pixel.setState(Pixel.State.unknown);
+
+                    else
+                        pixel.setMarkedState(gameView.getSelectedColor());
+                }
 
                 else if (lastButtonPressed == MouseEvent.BUTTON3)
                     pixel.setState(Pixel.State.shaded);
@@ -131,8 +131,10 @@ public class Grid implements ActionListener, MouseListener {
 
             case shaded:
                 if (lastButtonPressed == MouseEvent.BUTTON1)
+
                     if (byteReader.getColors().length == 1)
                         pixel.setState(Pixel.State.marked);
+
                     else
                         pixel.setMarkedState(gameView.getSelectedColor());
 
@@ -183,6 +185,5 @@ public class Grid implements ActionListener, MouseListener {
 //            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
     }
 
-    public void mouseExited(MouseEvent e) {
-    }
+    public void mouseExited(MouseEvent e) {}
 }
