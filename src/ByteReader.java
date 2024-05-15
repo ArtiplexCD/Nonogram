@@ -89,6 +89,19 @@ public class ByteReader {
         return byteArray;
     }
 
+    public Color[] getColorByteArray() {
+        Color[] colorArray = new Color[byteArray.length];
+
+        for (int i = 0; i < byteArray.length; i++) {
+            if (byteArray[i] == 0) {
+                colorArray[i] = Color.WHITE;
+                continue;
+            }
+            colorArray[i] = getColor(byteArray[i]);
+        }
+        return colorArray;
+    }
+
     // Gets Width because height is actually width as the ByteArray is being read from top to bottom
     public int getGridWidth() {
         return image.getHeight();
@@ -116,5 +129,9 @@ public class ByteReader {
                 return i + 1;
 
         return 0;
+    }
+
+    public Color getColor(int index) {
+        return colors[index - 1];
     }
 }

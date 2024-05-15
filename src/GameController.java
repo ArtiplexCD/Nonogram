@@ -21,16 +21,17 @@ public class GameController {
         if (isGameComplete()) {
             isComplete = true;
             gameComplete.showCompletionMessage();
-            grid.gameComplete();
+            grid.gameEnded();
         } else {
             gameComplete.showNotCompleteMessage();
+            grid.gameEnded();
         }
     }
 
     // TODO if shaded it should be considered as unknown and just check if the marked are correct or not
     public boolean isGameComplete() {
-        System.out.println("PixelArray = " + Arrays.toString(grid.getPixel()));
-        System.out.println(" ByteArray = " + Arrays.toString(byteReader.getByteArray()));
+//        System.out.println("PixelArray = " + Arrays.toString(grid.getPixel()));
+//        System.out.println(" ByteArray = " + Arrays.toString(byteReader.getByteArray()));
 
         return Arrays.equals(grid.getPixel(), byteReader.getByteArray());
     }

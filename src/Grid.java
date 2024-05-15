@@ -1,9 +1,9 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Arrays;
 
 public class Grid implements ActionListener, MouseListener {
     private int xGridSize;
@@ -55,6 +55,7 @@ public class Grid implements ActionListener, MouseListener {
         for (int x = 0; x < xGridSize; x++) {
             for (int y = 0; y < yGridSize; y++) {
                 pixels[x][y].setState(Pixel.State.unknown);
+                pixels[x][y].setBorder(BorderFactory.createLineBorder(Color.gray));
             }
         }
     }
@@ -80,17 +81,41 @@ public class Grid implements ActionListener, MouseListener {
                 x++;
             }
         }
-        //System.out.println("Pixelarray = " + Arrays.toString(pixelArray));
         return pixelArray;
     }
 
     // Makes all of the yellow pixels into white
-    public void gameComplete() {
+    // TODO should now give a red outline on the incorrect or missed pixels and show the correct solution
+    public void gameEnded() {
+        incorrectSquares();
+
         for (Pixel[] pixel : pixels) {
             for (Pixel p : pixel) {
                 if (p.getState() == Pixel.State.unknown) {
                     p.setState(Pixel.State.shaded);
                 }
+            }
+        }
+    }
+
+    // Replaces any incorrect squares with correct squares and give them a red border
+    public void incorrectSquares() {
+        Color[] colorByteArray = byteReader.getColorByteArray();
+
+        int x = 0;
+        int y = 0;
+
+        for (int i = 0; i < xGridSize * yGridSize; i++) {
+            if (colorByteArray[i] != pixels[x][y].getColor() && !colorByteArray[i].equals(Color.WHITE)) {
+                pixels[x][y].setMarkedState(colorByteArray[i]);
+                pixels[x][y].setBorder(BorderFactory.createLineBorder(Color.RED));
+            }
+
+            // printing it sideways as the array itself is sideways
+            y++;
+            if (y == yGridSize) {
+                y = 0;
+                x++;
             }
         }
     }
@@ -101,7 +126,11 @@ public class Grid implements ActionListener, MouseListener {
 
         switch (pState) {
             case unknown:
+
+                pixel.setBorder(BorderFactory.createLineBorder(Color.gray));
+
                 if (lastButtonPressed == MouseEvent.BUTTON1) {
+
 
                     if (byteReader.getColors().length == 1)
                         pixel.setState(Pixel.State.marked);
@@ -115,6 +144,9 @@ public class Grid implements ActionListener, MouseListener {
                 break;
 
             case marked:
+
+                pixel.setBorder(BorderFactory.createLineBorder(Color.gray));
+
                 if (lastButtonPressed == MouseEvent.BUTTON1) {
 
                     if (pixel.getColor() == gameView.getSelectedColor() || byteReader.getColors().length == 1)
@@ -130,6 +162,9 @@ public class Grid implements ActionListener, MouseListener {
                 break;
 
             case shaded:
+
+                pixel.setBorder(BorderFactory.createLineBorder(Color.gray));
+
                 if (lastButtonPressed == MouseEvent.BUTTON1)
 
                     if (byteReader.getColors().length == 1)

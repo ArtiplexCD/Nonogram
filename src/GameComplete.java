@@ -27,7 +27,7 @@ public class GameComplete implements ActionListener {
     }
 
     public void showNotCompleteMessage() {
-        JOptionPane.showMessageDialog(frame, "Not quite there yet");
+        JOptionPane.showMessageDialog(frame, "Not quite there");
     }
 
     public void actionPerformed(ActionEvent e) {
