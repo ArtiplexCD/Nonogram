@@ -26,6 +26,7 @@ public class GameView extends JFrame {
     private JPanel colorPalette;
     private Color[] colors;
     private Color selectedColor;
+    private int[] clueColor;
 
     public GameView(ByteReader byteReader) {
         this.byteReader = byteReader;
@@ -50,7 +51,7 @@ public class GameView extends JFrame {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(750, 750);
 
-        grid = new Grid(yGridSize, xGridSize, gridPanel, this, byteReader);
+        grid = new Grid(xGridSize, yGridSize, gridPanel, this, byteReader);
 
         gameController = new GameController(grid, byteReader, buttonGridLayout);
 
@@ -95,7 +96,6 @@ public class GameView extends JFrame {
     }
 
     public void createColorPalette() {
-//        Color[] colors = byteReader.getColors();
         if (colors.length == 1) {
             return;
         }
@@ -128,20 +128,149 @@ public class GameView extends JFrame {
     }
 
     // Computes the clues into correct format
-    public int[] clueCounter(int[] gridLength) {
-        boolean separated = false;
+//    public int[] clueCounter(int[] gridLength) {
+//        boolean separated = false;
+//        int[] clue = new int[gridLength.length];
+//        int n = 0;
+//
+//        for (int clu : gridLength) {
+//            if (clu == 1) {
+//                clue[n]++;
+//                separated = false;
+//            }
+//            else if (clu == 0 && clue[0] != 0 && !separated) {
+//                separated = true;
+//                n++;
+//            }
+//        }
+//
+//        return clue;
+//    }
+
+
+//    public int[] getClueColumn(int yGridRow) {
+//        int[] column = new int[this.yGridSize];
+//        int[] byteArray = byteReader.getByteArray();
+//
+//        for (int i = 0; i < this.xGridSize; i++) {
+//            column[i] = byteArray[i * this.yGridSize + yGridRow];
+//        }
+//        return clueCounter(column);
+//    }
+
+//    public JPanel createTopCluePanel() {
+//        JPanel topCluePanel = new JPanel(new GridLayout(1, xGridSize));
+//
+//        for (int i = 0; i < yGridSize; i++) {
+//
+//            int[] row = getClueColumn(i);
+//
+//            // Removes white space between the topCluePanel and grid
+//            int count = 0;
+//            for (int r : row)
+//                if (r != 0)
+//                    count++;
+//
+//            JPanel columnPanel = new JPanel(new GridLayout(count, 1));
+//
+//            for (int r : row)
+//                if (r != 0)
+//                    columnPanel.add(new JLabel(String.valueOf(r)));
+//
+//            topCluePanel.add(columnPanel);
+//        }
+//
+//        Border border = new EmptyBorder(0, 80, 0, -10);
+//        topCluePanel.setBorder(border);
+//        return topCluePanel;
+//    }
+
+
+//    public JPanel createLeftCluePanel() {
+//        JPanel leftCluePanel = new JPanel(new GridLayout(xGridSize, 1));
+//
+//        for (int i = 0; i < xGridSize; i++) {
+//
+//            int[] column = getClueRow(i);
+//
+//            int count = 0;
+//            for (int col : column)
+//                if (col != 0)
+//                    count++;
+//
+//            JPanel rowPanel = new JPanel(new GridLayout(1, count));
+//
+//            boolean insertedComma = false;
+//
+//            for (int c : column)
+//                if (c != 0) {
+//                    if (insertedComma)
+//                        rowPanel.add(new JLabel(","));
+//
+//                    rowPanel.add(new JLabel(String.valueOf(c)));
+//
+//                    insertedComma = true;
+//                }
+//
+//            leftCluePanel.add(rowPanel);
+//        }
+//        Border border = new EmptyBorder(0, 10, 0, 10);
+//        leftCluePanel.setBorder(border);
+//        return leftCluePanel;
+//    }
+
+    /*TODO It puts a negative number of the index of what the color is in order to color the text for the clues
+    TODO / so if there is a -1 and the index 1 for color is black it will make the label text black, and if it is -2 and the index of 2 for color color is blue it will make it blue */
+    // Computes the clues into correct format and gives color for the clues
+    public int[] clueCounterV2(int[] gridLength) {
+
+        clueColor = new int[gridLength.length];
         int[] clue = new int[gridLength.length];
+        Color[] colors = byteReader.getColors();
+
+        boolean separated = false;
         int n = 0;
 
-        for (int clu : gridLength) {
-            if (clu == 1) {
-                clue[n]++;
-                separated = false;
-            } else if (clu == 0 && clue[0] != 0 && !separated) {
+        System.out.println();
+        for (int i = 0; i < gridLength.length; i++) {
+
+            if (gridLength[i] != 0) {
+
+                if (i != 0 && (gridLength[i] == gridLength[i - 1] || clue[n] == 0)) {
+                    clue[n]++;
+                    separated = false;
+
+                } else if (i != 0){
+                    separated = true;
+                    n++;
+                    clue[n]++;
+
+                } else
+                    clue[n]++;
+
+            } else if (!separated) {
                 separated = true;
                 n++;
             }
+
+            for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {
+                if (separated && byteReader.getColorsIndex(colors[colorIndex]) == gridLength[colorIndex]) {
+                    clueColor[n] = byteReader.getColorsIndex(colors[colorIndex]);
+                }
+            }
+            System.out.println();
+
+            System.out.println("      clueColor: " + Arrays.toString(clueColor));
+            System.out.println("           clue: " + Arrays.toString(clue));
+            System.out.println();
+
         }
+        System.out.println();
+
+
+        System.out.println("     Clue: " + Arrays.toString(clue));
+        System.out.println("ClueColor: " + Arrays.toString(clueColor));
+        System.out.println();
 
         return clue;
     }
@@ -151,36 +280,47 @@ public class GameView extends JFrame {
         int[] column = new int[this.yGridSize];
         int[] byteArray = byteReader.getByteArray();
 
-        for (int i = 0; i < this.xGridSize; i++) {
+        for (int i = 0; i < this.xGridSize; i++)
             column[i] = byteArray[i * this.yGridSize + yGridRow];
-        }
-        return clueCounter(column);
+
+
+        return clueCounterV2(column);
     }
 
     // Creates a panel for the top side of the panel
-    public JPanel createTopCluePanel() {
+    public JPanel createTopCluePanelV2() {
         JPanel topCluePanel = new JPanel(new GridLayout(1, xGridSize));
 
         for (int i = 0; i < yGridSize; i++) {
 
-            int[] row = getClueColumn(i);
+            int[] column = getClueColumn(i);
 
+            // Removes white space between the topCluePanel and grid
             int count = 0;
-            for (int r : row)
-                if (r != 0)
+            for (int col : column)
+                if (col != 0)
                     count++;
 
             JPanel columnPanel = new JPanel(new GridLayout(count, 1));
 
-            for (int r : row)
-                if (r != 0)
-                    columnPanel.add(new JLabel(String.valueOf(r)));
+            for (int col : column) {
+                if (col != 0) {
+                    JLabel columnLabel = new JLabel(String.valueOf(col));
 
+                    columnPanel.add(columnLabel);
+
+                    for (Color color : colors) {
+                        if (byteReader.getColorsIndex(color) == col) {
+                            columnLabel = new JLabel(String.valueOf(color));
+                        }
+                    }
+                }
+            }
             topCluePanel.add(columnPanel);
         }
-
-        Border border = new EmptyBorder(0, 80, 0, -10);
+        Border border = new EmptyBorder(0, 155, 0, -10);
         topCluePanel.setBorder(border);
+
         return topCluePanel;
     }
 
@@ -189,125 +329,59 @@ public class GameView extends JFrame {
         int[] row = new int[this.yGridSize];
         int[] byteArray = byteReader.getByteArray();
 
-        for (int i = 0; i < this.yGridSize; i++) {
+        for (int i = 0; i < this.yGridSize; i++)
             row[i] = byteArray[i + xGridRow * this.yGridSize];
-        }
-
-        //System.out.println(Arrays.toString(row));
-
-
-        return clueCounter(row);
-    }
-
-    // Creates a panel for the left side of the panel
-    public JPanel createLeftCluePanel() {
-        JPanel leftCluePanel = new JPanel(new GridLayout(xGridSize, 1));
-
-        for (int i = 0; i < xGridSize; i++) {
-
-            int[] column = getClueRow(i);
-
-            int count = 0;
-            for (int col : column)
-                if (col != 0)
-                    count++;
-
-            JPanel rowPanel = new JPanel(new GridLayout(1, count));
-
-            boolean insertedComma = false;
-
-            for (int c : column)
-                if (c != 0) {
-                    if (insertedComma)
-                        rowPanel.add(new JLabel(","));
-
-                    rowPanel.add(new JLabel(String.valueOf(c)));
-
-                    insertedComma = true;
-                }
-
-            leftCluePanel.add(rowPanel);
-        }
-        Border border = new EmptyBorder(0, 10, 0, 10);
-        leftCluePanel.setBorder(border);
-        return leftCluePanel;
-    }
-
-    /*TODO It puts a negative number of the index of what the color is in order to color the text for the clues
-    TODO / so if there is a -1 and the index 1 for color is black it will make the label text black, and if it is -2 and the index of 2 for color color is blue it will make it blue */
-    public int[] clueCounterV2(int[] gridLength) {
-        boolean separated = false;
-        int[] clue = new int[gridLength.length];
-        int n = 0;
-
-        for (int clu : gridLength) {
-
-
-
-            if (clu == 1) {
-                clue[n]++;
-                separated = false;
-            }
-            else if (clu == 0 && clue[0] != 0 && !separated) {
-                separated = true;
-                n++;
-            }
-        }
-
-        return clue;
-    }
-
-    // TODO Get along with clueCounterV2
-    public int[] getClueRowV2(int xGridRow) {
-        int[] row = new int[this.yGridSize];
-        int[] byteArray = byteReader.getByteArray();
-
-        for (int i = 0; i < this.yGridSize; i++) {
-            row[i] = byteArray[i + xGridRow * this.yGridSize];
-        }
-
-        System.out.println(Arrays.toString(row));
 
 
         return clueCounterV2(row);
     }
 
-    // TODO work along with getClueRowV2
+    // Creates a panel for the left side of the panel
     public JPanel createLeftCluePanelV2() {
         JPanel leftCluePanel = new JPanel(new GridLayout(xGridSize, 1));
 
         for (int i = 0; i < xGridSize; i++) {
 
-            int[] column = getClueRowV2(i);
+            int[] row = getClueRow(i);
 
             int count = 0;
-            for (int col : column)
-                if (col != 0)
+            for (int r : row)
+                if (r != 0)
                     count++;
 
             JPanel rowPanel = new JPanel(new GridLayout(1, count));
 
             boolean insertComma = false;
 
-            for (int c : column)
-                if (c != 0) {
-                    if (insertComma)
-                        rowPanel.add(new JLabel(","));
+            for (int j = 0; j < row.length; j++) {
+                if (row[j] != 0) {
+                    JLabel rowLabel = new JLabel(String.valueOf(row[j]));
 
-                    rowPanel.add(new JLabel(String.valueOf(c)));
+                    if (insertComma) {
+                        rowPanel.add(new JLabel(","));
+                    }
+
+                    rowPanel.add(rowLabel);
+
+                    for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {
+                        if (clueColor[j] == colorIndex) {
+                            rowLabel.setForeground(colors[clueColor[j]]);
+                        }
+                    }
 
                     insertComma = true;
                 }
-
+            }
             leftCluePanel.add(rowPanel);
         }
         Border border = new EmptyBorder(0, 10, 0, 10);
         leftCluePanel.setBorder(border);
+
         return leftCluePanel;
     }
 
     public void clueDisplay() {
-        borderPanel.add(createTopCluePanel(), BorderLayout.NORTH);
-        borderPanel.add(createLeftCluePanel(), BorderLayout.WEST);
+        borderPanel.add(createTopCluePanelV2(), BorderLayout.NORTH);
+        borderPanel.add(createLeftCluePanelV2(), BorderLayout.WEST);
     }
 }
