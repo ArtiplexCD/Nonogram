@@ -1,0 +1,201 @@
+Index: src/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.io.IOException;\r\n\r\npublic class Main {\r\n\r\n    public static void main(String[] args) throws IOException {\r\n        String elephant = \"bmpFiles/elephant.bmp\";\r\n        String elephant2 = \"bmpFiles/2color_elephant.bmp\";\r\n        String basketball = \"bmpFiles/3color_basketball.bmp\";\r\n\r\n        String image = elephant2;\r\n\r\n        ByteReader byteReader = new ByteReader(image);\r\n\r\n        GameView gameView = new GameView(byteReader);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Main.java b/src/Main.java
+--- a/src/Main.java	(revision e655c9c5547a31a55ee03647ae20d358eaad46f0)
++++ b/src/Main.java	(date 1715885379447)
+@@ -7,7 +7,7 @@
+         String elephant2 = "bmpFiles/2color_elephant.bmp";
+         String basketball = "bmpFiles/3color_basketball.bmp";
+ 
+-        String image = elephant2;
++        String image = elephant;
+ 
+         ByteReader byteReader = new ByteReader(image);
+ 
+Index: src/GameView.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import javax.swing.*;\r\nimport javax.swing.border.Border;\r\nimport javax.swing.border.EmptyBorder;\r\nimport java.awt.*;\r\nimport java.util.Arrays;\r\n\r\npublic class GameView extends JFrame {\r\n    private final GameController gameController;\r\n    private final ByteReader byteReader;\r\n\r\n    private int xGridSize;\r\n    private int yGridSize;\r\n\r\n    private final Grid grid;\r\n\r\n    private BorderLayout borderLayout;\r\n    private GridLayout gridLayout;\r\n    private GridLayout buttonGridLayout;\r\n\r\n    private JPanel borderPanel;\r\n    private JPanel gridPanel;\r\n    private JPanel buttonPanel;\r\n\r\n    private JFrame frame;\r\n\r\n    private JPanel colorPalette;\r\n    private Color[] colors;\r\n    private Color selectedColor;\r\n    private int[] clueColor;\r\n\r\n    public GameView(ByteReader byteReader) {\r\n        this.byteReader = byteReader;\r\n        this.colors = byteReader.getColors();\r\n\r\n        xGridSize = byteReader.getGridWidth();\r\n        yGridSize = byteReader.getGridHeight();\r\n\r\n        borderLayout = new BorderLayout();\r\n        gridLayout = new GridLayout(this.xGridSize, this.yGridSize);\r\n        buttonGridLayout = new GridLayout(3, 1); // rows is how many buttons\r\n\r\n        borderPanel = new JPanel(borderLayout);\r\n        gridPanel = new JPanel(gridLayout);\r\n        buttonPanel = new JPanel(buttonGridLayout);\r\n\r\n        borderPanel.setLayout(borderLayout);\r\n        borderPanel.add(gridPanel, BorderLayout.CENTER);\r\n\r\n        frame = new JFrame(\"Hanjie Puzzle Game\");\r\n        frame.setContentPane(borderPanel);\r\n        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);\r\n        frame.setSize(750, 750);\r\n\r\n        grid = new Grid(xGridSize, yGridSize, gridPanel, this, byteReader);\r\n\r\n        gameController = new GameController(grid, byteReader, buttonGridLayout);\r\n\r\n        clueDisplay();\r\n        buttonsDisplay();\r\n\r\n        frame.setVisible(true);\r\n    }\r\n\r\n    public void buttonsDisplay() {\r\n        createColorPalette();\r\n        createCompletionButton();\r\n        createResetButton();\r\n\r\n        borderPanel.add(buttonPanel, BorderLayout.SOUTH);\r\n    }\r\n\r\n    // Button to check if game is complete\r\n    public void createCompletionButton() {\r\n        JButton completionButton = new JButton(\"See if you got it right!\");\r\n\r\n        completionButton.addActionListener(e -> gameController.checkCompletion());\r\n\r\n        buttonPanel.add(completionButton);\r\n    }\r\n\r\n    // Button to reset the board\r\n    public void createResetButton() {\r\n        JButton resetButton = new JButton(\"Reset\");\r\n\r\n        resetButton.addActionListener(e -> grid.resetGrid());\r\n\r\n        buttonPanel.add(resetButton);\r\n    }\r\n\r\n    public void setSelectedColor(Color color) {\r\n        selectedColor = color;\r\n    }\r\n\r\n    public Color getSelectedColor() {\r\n        return selectedColor;\r\n    }\r\n\r\n    public void createColorPalette() {\r\n        if (colors.length == 1) {\r\n            return;\r\n        }\r\n\r\n        colorPalette = new JPanel(new FlowLayout());\r\n\r\n        for (Color color : colors) {\r\n            JButton button = new JButton();\r\n            button.setBackground(color);\r\n\r\n            selectedColor = color;\r\n\r\n            button.addActionListener(e -> {\r\n                JButton btn = (JButton) e.getSource();\r\n                setSelectedColor(btn.getBackground());\r\n            });\r\n\r\n            button.setText(\" \");\r\n            colorPalette.add(button);\r\n\r\n            // Had problems with seeing colors of the buttons on Mac and this fixed it\r\n            String osName = System.getProperty(\"os.name\");\r\n            if (osName.toLowerCase().contains(\"mac\")) {\r\n                button.setOpaque(true);\r\n            }\r\n        }\r\n        selectedColor = colors[0]; // Default color\r\n\r\n        buttonPanel.add(colorPalette);\r\n    }\r\n\r\n    // Computes the clues into correct format\r\n//    public int[] clueCounter(int[] gridLength) {\r\n//        boolean separated = false;\r\n//        int[] clue = new int[gridLength.length];\r\n//        int n = 0;\r\n//\r\n//        for (int clu : gridLength) {\r\n//            if (clu == 1) {\r\n//                clue[n]++;\r\n//                separated = false;\r\n//            }\r\n//            else if (clu == 0 && clue[0] != 0 && !separated) {\r\n//                separated = true;\r\n//                n++;\r\n//            }\r\n//        }\r\n//\r\n//        return clue;\r\n//    }\r\n\r\n\r\n//    public int[] getClueColumn(int yGridRow) {\r\n//        int[] column = new int[this.yGridSize];\r\n//        int[] byteArray = byteReader.getByteArray();\r\n//\r\n//        for (int i = 0; i < this.xGridSize; i++) {\r\n//            column[i] = byteArray[i * this.yGridSize + yGridRow];\r\n//        }\r\n//        return clueCounter(column);\r\n//    }\r\n\r\n//    public JPanel createTopCluePanel() {\r\n//        JPanel topCluePanel = new JPanel(new GridLayout(1, xGridSize));\r\n//\r\n//        for (int i = 0; i < yGridSize; i++) {\r\n//\r\n//            int[] row = getClueColumn(i);\r\n//\r\n//            // Removes white space between the topCluePanel and grid\r\n//            int count = 0;\r\n//            for (int r : row)\r\n//                if (r != 0)\r\n//                    count++;\r\n//\r\n//            JPanel columnPanel = new JPanel(new GridLayout(count, 1));\r\n//\r\n//            for (int r : row)\r\n//                if (r != 0)\r\n//                    columnPanel.add(new JLabel(String.valueOf(r)));\r\n//\r\n//            topCluePanel.add(columnPanel);\r\n//        }\r\n//\r\n//        Border border = new EmptyBorder(0, 80, 0, -10);\r\n//        topCluePanel.setBorder(border);\r\n//        return topCluePanel;\r\n//    }\r\n\r\n\r\n//    public JPanel createLeftCluePanel() {\r\n//        JPanel leftCluePanel = new JPanel(new GridLayout(xGridSize, 1));\r\n//\r\n//        for (int i = 0; i < xGridSize; i++) {\r\n//\r\n//            int[] column = getClueRow(i);\r\n//\r\n//            int count = 0;\r\n//            for (int col : column)\r\n//                if (col != 0)\r\n//                    count++;\r\n//\r\n//            JPanel rowPanel = new JPanel(new GridLayout(1, count));\r\n//\r\n//            boolean insertedComma = false;\r\n//\r\n//            for (int c : column)\r\n//                if (c != 0) {\r\n//                    if (insertedComma)\r\n//                        rowPanel.add(new JLabel(\",\"));\r\n//\r\n//                    rowPanel.add(new JLabel(String.valueOf(c)));\r\n//\r\n//                    insertedComma = true;\r\n//                }\r\n//\r\n//            leftCluePanel.add(rowPanel);\r\n//        }\r\n//        Border border = new EmptyBorder(0, 10, 0, 10);\r\n//        leftCluePanel.setBorder(border);\r\n//        return leftCluePanel;\r\n//    }\r\n\r\n    /*TODO It puts a negative number of the index of what the color is in order to color the text for the clues\r\n    TODO / so if there is a -1 and the index 1 for color is black it will make the label text black, and if it is -2 and the index of 2 for color color is blue it will make it blue */\r\n    // Computes the clues into correct format and gives color for the clues\r\n    public int[] clueCounterV2(int[] gridLength) {\r\n\r\n        clueColor = new int[gridLength.length];\r\n        int[] clue = new int[gridLength.length];\r\n        Color[] colors = byteReader.getColors();\r\n\r\n        boolean separated = false;\r\n        int n = 0;\r\n\r\n        System.out.println();\r\n        for (int i = 0; i < gridLength.length; i++) {\r\n\r\n            // If not white\r\n            if (gridLength[i] != 0) {\r\n\r\n                // If gridLength[i] == gridLength[i-1]\r\n                if (i != 0 && (gridLength[i] == gridLength[i - 1])) {\r\n                    clue[n]++;\r\n                    separated = false;\r\n\r\n                    // if  gridLength[i] == gridLength[i-1] is not true checks\r\n                } else if (i != 0){\r\n                    separated = true;\r\n                    n++;\r\n                    clue[n]++;\r\n\r\n                } else\r\n                    clue[n]++;\r\n\r\n            } else if (!separated) {\r\n                separated = true;\r\n                n++;\r\n            }\r\n\r\n            for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {\r\n                if (byteReader.getColorsIndex(colors[colorIndex]) == gridLength[i]) {\r\n                    clueColor[n] = byteReader.getColorsIndex(colors[colorIndex]);\r\n                }\r\n                else\r\n                    clueColor[n] = -1;\r\n            }\r\n\r\n\r\n            System.out.println();\r\n\r\n            System.out.println(\"      clueColor: \" + Arrays.toString(clueColor));\r\n            System.out.println(\"           clue: \" + Arrays.toString(clue));\r\n            System.out.println();\r\n\r\n        }\r\n        System.out.println();\r\n\r\n\r\n        System.out.println(\"     Clue: \" + Arrays.toString(clue));\r\n        System.out.println(\"ClueColor: \" + Arrays.toString(clueColor));\r\n        System.out.println();\r\n\r\n        return clue;\r\n    }\r\n\r\n    // Takes the placement of the column of which current needs the column for and returns the clue format\r\n    public int[] getClueColumn(int yGridRow) {\r\n        int[] column = new int[this.yGridSize];\r\n        int[] byteArray = byteReader.getByteArray();\r\n\r\n        for (int i = 0; i < this.xGridSize; i++)\r\n            column[i] = byteArray[i * this.yGridSize + yGridRow];\r\n\r\n        System.out.println(\"In getClueColumn\");\r\n\r\n        return clueCounterV2(column);\r\n    }\r\n\r\n    // Creates a panel for the top side of the panel\r\n    public JPanel createTopCluePanelV2() {\r\n        JPanel topCluePanel = new JPanel(new GridLayout(1, xGridSize));\r\n\r\n        for (int i = 0; i < yGridSize; i++) {\r\n\r\n            int[] column = getClueColumn(i);\r\n\r\n            // Removes white space between the topCluePanel and grid\r\n            int count = 0;\r\n            for (int col : column)\r\n                if (col != 0)\r\n                    count++;\r\n\r\n            JPanel columnPanel = new JPanel(new GridLayout(count, 1));\r\n\r\n            for (int j = 0; j < column.length; j++) {\r\n                if (column[j] != 0) {\r\n                    JLabel columnLabel = new JLabel(String.valueOf(column[j]));\r\n\r\n                    columnPanel.add(columnLabel);\r\n\r\n                    for (Color color : colors) {\r\n                        if (byteReader.getColorsIndex(color) == column[j]) {\r\n                            columnLabel = new JLabel(String.valueOf(color));\r\n                        }\r\n                    }\r\n                    for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {\r\n                        if (clueColor[j] == colorIndex) {\r\n                            columnLabel.setForeground(colors[clueColor[j]]);\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n            topCluePanel.add(columnPanel);\r\n        }\r\n        Border border = new EmptyBorder(0, 155, 0, -10);\r\n        topCluePanel.setBorder(border);\r\n\r\n        return topCluePanel;\r\n    }\r\n\r\n    // Same as getClueColumn but gives a row\r\n    public int[] getClueRow(int xGridRow) {\r\n        int[] row = new int[this.yGridSize];\r\n        int[] byteArray = byteReader.getByteArray();\r\n\r\n        for (int i = 0; i < this.yGridSize; i++)\r\n            row[i] = byteArray[i + xGridRow * this.yGridSize];\r\n\r\n        System.out.println(\"In getClueRow\");\r\n\r\n        return clueCounterV2(row);\r\n    }\r\n\r\n    // Creates a panel for the left side of the panel\r\n    public JPanel createLeftCluePanelV2() {\r\n        JPanel leftCluePanel = new JPanel(new GridLayout(xGridSize, 1));\r\n\r\n        for (int i = 0; i < xGridSize; i++) {\r\n\r\n            int[] row = getClueRow(i);\r\n\r\n            int count = 0;\r\n            for (int r : row)\r\n                if (r != 0)\r\n                    count++;\r\n\r\n            JPanel rowPanel = new JPanel(new GridLayout(1, count));\r\n\r\n            boolean insertComma = false;\r\n\r\n            for (int j = 0; j < row.length; j++) {\r\n                if (row[j] != 0) {\r\n                    JLabel rowLabel = new JLabel(String.valueOf(row[j]));\r\n\r\n                    if (insertComma) {\r\n                        rowPanel.add(new JLabel(\",\"));\r\n                    }\r\n\r\n                    rowPanel.add(rowLabel);\r\n\r\n                    for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {\r\n                        if (clueColor[j] == colorIndex) {\r\n                            rowLabel.setForeground(colors[clueColor[j]]);\r\n                        }\r\n                    }\r\n\r\n                    insertComma = true;\r\n                }\r\n            }\r\n            leftCluePanel.add(rowPanel);\r\n        }\r\n        Border border = new EmptyBorder(0, 10, 0, 10);\r\n        leftCluePanel.setBorder(border);\r\n\r\n        return leftCluePanel;\r\n    }\r\n\r\n    public void clueDisplay() {\r\n        borderPanel.add(createTopCluePanelV2(), BorderLayout.NORTH);\r\n        borderPanel.add(createLeftCluePanelV2(), BorderLayout.WEST);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/GameView.java b/src/GameView.java
+--- a/src/GameView.java	(revision e655c9c5547a31a55ee03647ae20d358eaad46f0)
++++ b/src/GameView.java	(date 1715884250080)
+@@ -260,10 +260,9 @@
+                 if (byteReader.getColorsIndex(colors[colorIndex]) == gridLength[i]) {
+                     clueColor[n] = byteReader.getColorsIndex(colors[colorIndex]);
+                 }
+-                else
+-                    clueColor[n] = -1;
++//                else
++//                    clueColor[n] = -1;
+             }
+-
+ 
+             System.out.println();
+ 
+@@ -317,14 +316,9 @@
+ 
+                     columnPanel.add(columnLabel);
+ 
+-                    for (Color color : colors) {
+-                        if (byteReader.getColorsIndex(color) == column[j]) {
+-                            columnLabel = new JLabel(String.valueOf(color));
+-                        }
+-                    }
+                     for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {
+-                        if (clueColor[j] == colorIndex) {
+-                            columnLabel.setForeground(colors[clueColor[j]]);
++                        if (clueColor[j] == colorIndex + 1) {
++                            columnLabel.setForeground(colors[clueColor[j] - 1]);
+                         }
+                     }
+                 }
+@@ -371,18 +365,18 @@
+                 if (row[j] != 0) {
+                     JLabel rowLabel = new JLabel(String.valueOf(row[j]));
+ 
++                    for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {
++                        if (clueColor[j] == colorIndex + 1) {
++                            rowLabel.setForeground(colors[clueColor[j] - 1]);
++                        }
++                    }
++
+                     if (insertComma) {
+                         rowPanel.add(new JLabel(","));
+                     }
+ 
+                     rowPanel.add(rowLabel);
+ 
+-                    for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {
+-                        if (clueColor[j] == colorIndex) {
+-                            rowLabel.setForeground(colors[clueColor[j]]);
+-                        }
+-                    }
+-
+                     insertComma = true;
+                 }
+             }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"2017c7db-77d5-45a0-8646-4838e0352952\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/ByteReader.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/ByteReader.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/GameComplete.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/GameComplete.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/GameController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/GameController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/GameView.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/GameView.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/Grid.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Grid.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/Main.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Main.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/Pixel.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Pixel.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"ByteReading\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 4\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2fouQnRTTiLOenBBKewKMVa8q0j\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_ADD_EXTERNAL_FILES\": \"true\",\r\n    \"Application.Nanogram Game.executor\": \"Run\",\r\n    \"Application.Unnamed.executor\": \"Run\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\r\n    \"git-widget-placeholder\": \"ColorPallete\",\r\n    \"kotlin-language-version-configured\": \"true\",\r\n    \"last_opened_file_path\": \"/Users/Artur/Documents/Code/LancUniY1/Final Project/Nonogram\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"project.structure.last.edited\": \"Modules\",\r\n    \"project.structure.proportion\": \"0.15\",\r\n    \"project.structure.side.proportion\": \"0.2\",\r\n    \"run.code.analysis.last.selected.profile\": \"pProject Default\",\r\n    \"settings.editor.selected.configurable\": \"sshConsole\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"Nanogram Game\" type=\"Application\" factoryName=\"Application\" activateToolWindowBeforeRun=\"false\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"Main\" />\r\n      <module name=\"Nonogram\" />\r\n      <selectedOptions>\r\n        <option name=\"environmentVariables\" visible=\"false\" />\r\n      </selectedOptions>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.15989.150\" />\r\n        <option value=\"bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-IU-241.15989.150\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"2017c7db-77d5-45a0-8646-4838e0352952\" name=\"Changes\" comment=\"\" />\r\n      <created>1714479737206</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1714479737206</updated>\r\n      <workItem from=\"1714479738250\" duration=\"8430000\" />\r\n      <workItem from=\"1714488315258\" duration=\"194000\" />\r\n      <workItem from=\"1714495541964\" duration=\"586000\" />\r\n      <workItem from=\"1714651998470\" duration=\"4802000\" />\r\n      <workItem from=\"1714832306565\" duration=\"11901000\" />\r\n      <workItem from=\"1714908670325\" duration=\"4236000\" />\r\n      <workItem from=\"1715096953227\" duration=\"1129000\" />\r\n      <workItem from=\"1715213847095\" duration=\"636000\" />\r\n      <workItem from=\"1715215503360\" duration=\"20000\" />\r\n      <workItem from=\"1715269474927\" duration=\"3644000\" />\r\n      <workItem from=\"1715297322629\" duration=\"84000\" />\r\n      <workItem from=\"1715375861938\" duration=\"5279000\" />\r\n      <workItem from=\"1715449047805\" duration=\"6449000\" />\r\n      <workItem from=\"1715517524831\" duration=\"16454000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n  <component name=\"XSLT-Support.FileAssociations.UIState\">\r\n    <expand />\r\n    <select />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision e655c9c5547a31a55ee03647ae20d358eaad46f0)
++++ b/.idea/workspace.xml	(date 1715885379475)
+@@ -4,15 +4,10 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="2017c7db-77d5-45a0-8646-4838e0352952" name="Changes" comment="">
++    <list default="true" id="2017c7db-77d5-45a0-8646-4838e0352952" name="Changes" comment="Working on clues to incorporate colors">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/ByteReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ByteReader.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/GameComplete.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameComplete.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameController.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/GameView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameView.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/Grid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Grid.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/Pixel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pixel.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -45,29 +40,29 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "ASKED_ADD_EXTERNAL_FILES": "true",
+-    "Application.Nanogram Game.executor": "Run",
+-    "Application.Unnamed.executor": "Run",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+-    "git-widget-placeholder": "ColorPallete",
+-    "kotlin-language-version-configured": "true",
+-    "last_opened_file_path": "/Users/Artur/Documents/Code/LancUniY1/Final Project/Nonogram",
+-    "node.js.detected.package.eslint": "true",
+-    "node.js.detected.package.tslint": "true",
+-    "node.js.selected.package.eslint": "(autodetect)",
+-    "node.js.selected.package.tslint": "(autodetect)",
+-    "nodejs_package_manager_path": "npm",
+-    "project.structure.last.edited": "Modules",
+-    "project.structure.proportion": "0.15",
+-    "project.structure.side.proportion": "0.2",
+-    "run.code.analysis.last.selected.profile": "pProject Default",
+-    "settings.editor.selected.configurable": "sshConsole",
+-    "vue.rearranger.settings.migration": "true"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
++    &quot;Application.Nanogram Game.executor&quot;: &quot;Run&quot;,
++    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;ColorPallete&quot;,
++    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
++    &quot;last_opened_file_path&quot;: &quot;/Users/Artur/Documents/Code/LancUniY1/Final Project/Nonogram&quot;,
++    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
++    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
++    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
++    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
++    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
++    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
++    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
++    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
++    &quot;settings.editor.selected.configurable&quot;: &quot;sshConsole&quot;,
++    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="RunManager">
+     <configuration name="Nanogram Game" type="Application" factoryName="Application" activateToolWindowBeforeRun="false">
+       <option name="MAIN_CLASS_NAME" value="Main" />
+@@ -110,7 +105,27 @@
+       <workItem from="1715375861938" duration="5279000" />
+       <workItem from="1715449047805" duration="6449000" />
+       <workItem from="1715517524831" duration="16454000" />
++      <workItem from="1715793540706" duration="25597000" />
++      <workItem from="1715858898077" duration="2184000" />
++      <workItem from="1715880104333" duration="3448000" />
+     </task>
++    <task id="LOCAL-00001" summary="Added so that any incorrect squares when the puzzle is completed get highlighted">
++      <option name="closed" value="true" />
++      <created>1715796586287</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1715796586287</updated>
++    </task>
++    <task id="LOCAL-00002" summary="Working on clues to incorporate colors">
++      <option name="closed" value="true" />
++      <created>1715860436425</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1715860436425</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -129,6 +144,9 @@
+   </component>
+   <component name="VcsManagerConfiguration">
+     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
++    <MESSAGE value="Added so that any incorrect squares when the puzzle is completed get highlighted" />
++    <MESSAGE value="Working on clues to incorporate colors" />
++    <option name="LAST_COMMIT_MESSAGE" value="Working on clues to incorporate colors" />
+   </component>
+   <component name="XSLT-Support.FileAssociations.UIState">
+     <expand />

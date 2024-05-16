@@ -260,10 +260,9 @@ public class GameView extends JFrame {
                 if (byteReader.getColorsIndex(colors[colorIndex]) == gridLength[i]) {
                     clueColor[n] = byteReader.getColorsIndex(colors[colorIndex]);
                 }
-                else
-                    clueColor[n] = -1;
+//                else
+//                    clueColor[n] = -1;
             }
-
 
             System.out.println();
 
@@ -317,14 +316,9 @@ public class GameView extends JFrame {
 
                     columnPanel.add(columnLabel);
 
-                    for (Color color : colors) {
-                        if (byteReader.getColorsIndex(color) == column[j]) {
-                            columnLabel = new JLabel(String.valueOf(color));
-                        }
-                    }
                     for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {
-                        if (clueColor[j] == colorIndex) {
-                            columnLabel.setForeground(colors[clueColor[j]]);
+                        if (clueColor[j] == colorIndex + 1) {
+                            columnLabel.setForeground(colors[clueColor[j] - 1]);
                         }
                     }
                 }
@@ -371,17 +365,17 @@ public class GameView extends JFrame {
                 if (row[j] != 0) {
                     JLabel rowLabel = new JLabel(String.valueOf(row[j]));
 
+                    for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {
+                        if (clueColor[j] == colorIndex + 1) {
+                            rowLabel.setForeground(colors[clueColor[j] - 1]);
+                        }
+                    }
+
                     if (insertComma) {
                         rowPanel.add(new JLabel(","));
                     }
 
                     rowPanel.add(rowLabel);
-
-                    for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {
-                        if (clueColor[j] == colorIndex) {
-                            rowLabel.setForeground(colors[clueColor[j]]);
-                        }
-                    }
 
                     insertComma = true;
                 }
