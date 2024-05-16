@@ -7,7 +7,7 @@ public class Main {
         String elephant2 = "bmpFiles/2color_elephant.bmp";
         String basketball = "bmpFiles/3color_basketball.bmp";
 
-        String image = basketball;
+        String image = elephant2;
 
         ByteReader byteReader = new ByteReader(image);
 

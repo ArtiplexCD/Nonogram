@@ -234,12 +234,15 @@ public class GameView extends JFrame {
         System.out.println();
         for (int i = 0; i < gridLength.length; i++) {
 
+            // If not white
             if (gridLength[i] != 0) {
 
-                if (i != 0 && (gridLength[i] == gridLength[i - 1] || clue[n] == 0)) {
+                // If gridLength[i] == gridLength[i-1]
+                if (i != 0 && (gridLength[i] == gridLength[i - 1])) {
                     clue[n]++;
                     separated = false;
 
+                    // if  gridLength[i] == gridLength[i-1] is not true checks
                 } else if (i != 0){
                     separated = true;
                     n++;
@@ -254,10 +257,14 @@ public class GameView extends JFrame {
             }
 
             for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {
-                if (separated && byteReader.getColorsIndex(colors[colorIndex]) == gridLength[colorIndex]) {
+                if (byteReader.getColorsIndex(colors[colorIndex]) == gridLength[i]) {
                     clueColor[n] = byteReader.getColorsIndex(colors[colorIndex]);
                 }
+                else
+                    clueColor[n] = -1;
             }
+
+
             System.out.println();
 
             System.out.println("      clueColor: " + Arrays.toString(clueColor));
@@ -283,6 +290,7 @@ public class GameView extends JFrame {
         for (int i = 0; i < this.xGridSize; i++)
             column[i] = byteArray[i * this.yGridSize + yGridRow];
 
+        System.out.println("In getClueColumn");
 
         return clueCounterV2(column);
     }
@@ -303,15 +311,20 @@ public class GameView extends JFrame {
 
             JPanel columnPanel = new JPanel(new GridLayout(count, 1));
 
-            for (int col : column) {
-                if (col != 0) {
-                    JLabel columnLabel = new JLabel(String.valueOf(col));
+            for (int j = 0; j < column.length; j++) {
+                if (column[j] != 0) {
+                    JLabel columnLabel = new JLabel(String.valueOf(column[j]));
 
                     columnPanel.add(columnLabel);
 
                     for (Color color : colors) {
-                        if (byteReader.getColorsIndex(color) == col) {
+                        if (byteReader.getColorsIndex(color) == column[j]) {
                             columnLabel = new JLabel(String.valueOf(color));
+                        }
+                    }
+                    for (int colorIndex = 0; colorIndex < colors.length; colorIndex++) {
+                        if (clueColor[j] == colorIndex) {
+                            columnLabel.setForeground(colors[clueColor[j]]);
                         }
                     }
                 }
@@ -332,6 +345,7 @@ public class GameView extends JFrame {
         for (int i = 0; i < this.yGridSize; i++)
             row[i] = byteArray[i + xGridRow * this.yGridSize];
 
+        System.out.println("In getClueRow");
 
         return clueCounterV2(row);
     }
