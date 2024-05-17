@@ -8,14 +8,15 @@ import java.awt.event.MouseListener;
 public class Grid implements ActionListener, MouseListener {
     private int xGridSize;
     private int yGridSize;
+
     private final JPanel panel;
 
     private Pixel[][] pixels;
 
     private int lastButtonPressed = -1; // -1 is none, 1 is left and 3 is right
 
-    private GameView gameView;
-    private ByteReader byteReader;
+    private final GameView gameView;
+    private final ByteReader byteReader;
 
     // The x and y grid sizes are switched as it is being read vertically
     public Grid(int xGridSize, int yGridSize, JPanel panel, GameView gameView, ByteReader byteReader) {
@@ -36,18 +37,13 @@ public class Grid implements ActionListener, MouseListener {
 
                 pixels[i][j] = new Pixel();
 
-                // Had problems with seeing colors of the buttons on Mac and this fixed it
-                String osName = System.getProperty("os.name");
-                if (osName.toLowerCase().contains("mac")) {
-                    pixels[i][j].setOpaque(true);
-                }
-
                 pixels[i][j].addActionListener(this);
 
                 pixels[i][j].addMouseListener(this);
                 // Differentiating between left and right click
 
                 pixels[i][j].setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+                pixels[i][j].setOpaque(true);
 
                 panel.add(pixels[i][j]);
             }
@@ -63,7 +59,7 @@ public class Grid implements ActionListener, MouseListener {
         }
     }
 
-    //Gets the byte map of marked game
+    //Gets the byte map of current grid
     public int[] getPixel() {
         int[] pixelArray = new int[xGridSize * yGridSize];
 
@@ -72,8 +68,6 @@ public class Grid implements ActionListener, MouseListener {
         int y = 0;
 
         while (n <= xGridSize * yGridSize - 1) {
-            /* Checks if it is one of the colors available and if not it returns 0
-             if yes it gives appropriate index for color */
             pixelArray[n] = byteReader.getColorsIndex(pixels[x][y].getColor());
 
             y++;
@@ -91,13 +85,10 @@ public class Grid implements ActionListener, MouseListener {
     public void gameEnded() {
         incorrectSquares();
 
-        for (Pixel[] pixel : pixels) {
-            for (Pixel p : pixel) {
-                if (p.getState() == Pixel.State.unknown) {
+        for (Pixel[] pixel : pixels)
+            for (Pixel p : pixel)
+                if (p.getState() == Pixel.State.unknown)
                     p.setState(Pixel.State.shaded);
-                }
-            }
-        }
     }
 
     // Replaces any incorrect squares with correct squares and give them a red border
@@ -108,18 +99,18 @@ public class Grid implements ActionListener, MouseListener {
         int y = 0;
 
         for (int i = 0; i < xGridSize * yGridSize; i++) {
-            if (colorByteArray[i] != pixels[x][y].getColor() && !colorByteArray[i].equals(Color.WHITE)) {
+            if (!colorByteArray[i].equals(Color.WHITE) && colorByteArray[i] != pixels[x][y].getColor()) {
 
                 pixels[x][y].setMarkedState(colorByteArray[i]);
 
-                if (!colorByteArray[i].equals(Color.RED)) {
-                    pixels[x][y].setBorder(BorderFactory.createLineBorder(Color.RED));
+                if (!colorByteArray[i].equals(Color.YELLOW)) {
+                    pixels[x][y].setBorder(BorderFactory.createLineBorder(Color.decode("#FFDF00")));
                 } else
-                    pixels[x][y].setBorder(BorderFactory.createLineBorder(Color.ORANGE));
+                    pixels[x][y].setBorder(BorderFactory.createLineBorder(Color.decode("#E56997")));
 
-            } else if (colorByteArray[i] == Color.WHITE) {
+            } else if (colorByteArray[i] == Color.WHITE)
                 pixels[x][y].setState(Pixel.State.shaded);
-            }
+
 
             // printing it sideways as the array itself is sideways
             y++;
@@ -141,14 +132,13 @@ public class Grid implements ActionListener, MouseListener {
 
                 if (lastButtonPressed == MouseEvent.BUTTON1) {
 
-
                     if (byteReader.getColors().length == 1)
                         pixel.setState(Pixel.State.marked);
 
                     else
                         pixel.setMarkedState(gameView.getSelectedColor());
-                }
-                else if (lastButtonPressed == MouseEvent.BUTTON3)
+
+                } else if (lastButtonPressed == MouseEvent.BUTTON3)
                     pixel.setState(Pixel.State.shaded);
 
                 break;
@@ -164,9 +154,8 @@ public class Grid implements ActionListener, MouseListener {
 
                     else
                         pixel.setMarkedState(gameView.getSelectedColor());
-                }
 
-                else if (lastButtonPressed == MouseEvent.BUTTON3)
+                } else if (lastButtonPressed == MouseEvent.BUTTON3)
                     pixel.setState(Pixel.State.shaded);
 
                 break;
@@ -175,7 +164,7 @@ public class Grid implements ActionListener, MouseListener {
 
                 pixel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 
-                if (lastButtonPressed == MouseEvent.BUTTON1)
+                if (lastButtonPressed == MouseEvent.BUTTON1) {
 
                     if (byteReader.getColors().length == 1)
                         pixel.setState(Pixel.State.marked);
@@ -183,7 +172,7 @@ public class Grid implements ActionListener, MouseListener {
                     else
                         pixel.setMarkedState(gameView.getSelectedColor());
 
-                else if (lastButtonPressed == MouseEvent.BUTTON3)
+                } else if (lastButtonPressed == MouseEvent.BUTTON3)
                     pixel.setState(Pixel.State.unknown);
 
                 break;
@@ -197,12 +186,12 @@ public class Grid implements ActionListener, MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-        // TODO to make mouse dragged using this is very simple would just need to include left pressed to be manually started
-        if (lastButtonPressed == MouseEvent.BUTTON1)
-            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Left Click"));
-
-        else if (lastButtonPressed == MouseEvent.BUTTON3)
-            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
+        // Makes mouse dragged work by manually starting actionPerformed
+//        if (lastButtonPressed == MouseEvent.BUTTON1)
+//            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Left Click"));
+//
+//        else if (lastButtonPressed == MouseEvent.BUTTON3)
+//            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
     }
 
     public void mousePressed(MouseEvent e) {
@@ -211,8 +200,9 @@ public class Grid implements ActionListener, MouseListener {
         else if (SwingUtilities.isRightMouseButton(e))
             lastButtonPressed = MouseEvent.BUTTON3;
 
-        if (lastButtonPressed == MouseEvent.BUTTON1)
-            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Left Click"));
+        // makes clicking no longer work
+//        if (lastButtonPressed == MouseEvent.BUTTON1)
+//            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Left Click"));
         if (lastButtonPressed == MouseEvent.BUTTON3)
             actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
     }
@@ -222,12 +212,12 @@ public class Grid implements ActionListener, MouseListener {
     }
 
     public void mouseEntered(MouseEvent e) {
-        //TODO to make mouseDrag work
-        if (lastButtonPressed == MouseEvent.BUTTON1)
-            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Left Click"));
-
-        else if (lastButtonPressed == MouseEvent.BUTTON3)
-            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
+        // Makes mouseDrag work
+//        if (lastButtonPressed == MouseEvent.BUTTON1)
+//            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Left Click"));
+//
+//        else if (lastButtonPressed == MouseEvent.BUTTON3)
+//            actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Right Click"));
     }
 
     public void mouseExited(MouseEvent e) {}

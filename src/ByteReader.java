@@ -44,7 +44,6 @@ public class ByteReader {
                 continue;
             }
 
-
             isNewColor = true;
 
             for (int index = 0; index < colors.length; index++) {
@@ -77,10 +76,9 @@ public class ByteReader {
                 x = 0;
             }
         }
-        //System.out.println(Arrays.toString(byteArray));
     }
 
-    // Increases size of variable colors
+    // Increases size of the variable colors
     private void increaseSize() {
         Color[] temp = new Color[colors.length + 1];
         System.arraycopy(colors, 0, temp, 0, colors.length);

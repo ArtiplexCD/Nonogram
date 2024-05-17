@@ -4,8 +4,8 @@ import java.awt.*;
 public class Pixel extends JButton {
     private State state;
 
-    // Trying to use as identifiers
-    enum State {
+    // Using as identifiers
+    public enum State {
         unknown,
         shaded,
         marked
@@ -30,7 +30,7 @@ public class Pixel extends JButton {
 
     public void setMarkedState(Color color) {
         this.state = State.marked;
-        updateColor(color);
+        updateMarkedColor(color);
     }
 
     public void setColor(Color color) {
@@ -41,11 +41,14 @@ public class Pixel extends JButton {
         return this.getBackground();
     }
 
+    public void updateMarkedColor(Color color) {
+        setColor(color);
+    }
 
     public void updateColor() {
         switch (state) {
             case unknown:
-                this.setBackground(Color.decode("#FFDF00"));
+                this.setBackground(Color.decode("#D3B5E5")); // Wanted a different color
                 break;
 
             case shaded:
@@ -54,23 +57,6 @@ public class Pixel extends JButton {
 
             case marked:
                 this.setBackground(Color.black);
-                break;
-        }
-    }
-
-    public void updateColor(Color color) {
-        switch (state) {
-
-            case unknown:
-                this.setBackground(Color.decode("#FFDF00"));
-                break;
-
-            case shaded:
-                this.setBackground(Color.white);
-                break;
-
-            case marked:
-                setColor(color);
                 break;
         }
     }
