@@ -1,4 +1,4 @@
-The directory should the Nonogram when executing the project and follow the following steps.
+The working directory should Nonogram when working in the terminal.
 
 Compile in terminal with `javac src/*.java` 
 Run in terminal using `java -cp src Driver`
