@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2017c7db-77d5-45a0-8646-4838e0352952" name="Changes" comment="Working on clues to incorporate colors" />
+    <list default="true" id="2017c7db-77d5-45a0-8646-4838e0352952" name="Changes" comment="Removed all binary files">
+      <change beforePath="$PROJECT_DIR$/src/Driver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Driver.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -121,7 +123,23 @@
       <option name="project" value="LOCAL" />
       <updated>1715860436425</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Made some final changes">
+      <option name="closed" value="true" />
+      <created>1715911459778</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1715911459778</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Removed all binary files">
+      <option name="closed" value="true" />
+      <created>1715911600712</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1715911600712</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -142,7 +160,9 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Added so that any incorrect squares when the puzzle is completed get highlighted" />
     <MESSAGE value="Working on clues to incorporate colors" />
-    <option name="LAST_COMMIT_MESSAGE" value="Working on clues to incorporate colors" />
+    <MESSAGE value="Made some final changes" />
+    <MESSAGE value="Removed all binary files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed all binary files" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

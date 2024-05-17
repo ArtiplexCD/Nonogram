@@ -3,10 +3,14 @@ import java.io.IOException;
 public class Driver {
 
     public static void main(String[] args) throws IOException {
-        String bmpFile = "bmpFiles/inputNameOfFileHere";
+        String elephant = "bmpFiles/elephant.bmp";
+        String elephant2 = "bmpFiles/2color_elephant.bmp";
+        String basketball = "bmpFiles/3color_basketball.bmp";
 
-        ByteReader byteReader = new ByteReader(bmpFile);
-        
+        String image = basketball;
+
+        ByteReader byteReader = new ByteReader(image);
+
         GameView gameView = new GameView(byteReader);
     }
 }
