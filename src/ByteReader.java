@@ -3,24 +3,19 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class ByteReader {
     private BufferedImage image;
-
     private int[] byteArray;
-
     private Color[] colors = new Color[0];
 
     public ByteReader(String BMPFileName) throws IOException {
         this.image = ImageIO.read(new File(BMPFileName));
-        //seeBMPImage();
-        initializeBMPImage();
+        initBMPImage();
     }
 
-
     // Initializes byteArray with the image and initializes colors with all the types of colors in the image provided
-    public void initializeBMPImage() {
+    private void initBMPImage() {
         byteArray = new int[image.getWidth() * image.getHeight()];
 
         boolean isNewColor;
@@ -85,6 +80,13 @@ public class ByteReader {
         //System.out.println(Arrays.toString(byteArray));
     }
 
+    // Increases size of variable colors
+    private void increaseSize() {
+        Color[] temp = new Color[colors.length + 1];
+        System.arraycopy(colors, 0, temp, 0, colors.length);
+        colors = temp;
+    }
+
     public int[] getByteArray() {
         return byteArray;
     }
@@ -112,26 +114,18 @@ public class ByteReader {
         return image.getWidth();
     }
 
-    // Increases size of variable colors
-    public void increaseSize() {
-        Color[] temp = new Color[colors.length + 1];
-        System.arraycopy(colors, 0, temp, 0, colors.length);
-        colors = temp;
-    }
-
     public Color[] getColors() {
         return colors;
+    }
+
+    public Color getColor(int index) {
+        return colors[index - 1];
     }
 
     public int getColorsIndex(Color color) {
         for (int i = 0; i < colors.length; i++)
             if (colors[i].equals(color))
                 return i + 1;
-
         return 0;
-    }
-
-    public Color getColor(int index) {
-        return colors[index - 1];
     }
 }
